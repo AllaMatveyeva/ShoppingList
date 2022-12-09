@@ -1,6 +1,7 @@
 import styled from "styled-components"
 import { Button } from "./Button";
-
+import CloseIcon from '@mui/icons-material/Close';
+import { useState } from "react";
 
 export const Wrapper = styled.div`
   position: absolute;
@@ -19,8 +20,6 @@ position: absolute;
 top: 40%;
 left: 50%;
 transform: translate(-50%);
-min-width: 400px;
-min-height: 200px;
 border-radius: 20px;
 padding: 10px;
 background-color: aliceblue;
@@ -30,21 +29,27 @@ justify-content: flex-end;
   display: flex;
 `;
 
-const buttonText = "save";
+export const CloseIconMui = styled(CloseIcon)`
+   font-size: 20px !important;
+   color:  #610c1a !important;
+    font-weight: bold;
+    align-self: flex-end;
+`
+
+
 
 export const Modal = ({open, children, close,}) => {
-
-    console.log(close)
-
+  
     return (
         open &&
         <>
         <Wrapper onClick={close}>
         </Wrapper>
         <ModalWindow >
+        <CloseIconMui onClick={close}/>
         {children}
         <WrapperButton>
-        <Button onClick={close} buttonText = {buttonText} min/>
+        {/* <Button onClick={close} buttonText = {buttonText} min/> */}
         </WrapperButton>
     </ModalWindow>
     </>
