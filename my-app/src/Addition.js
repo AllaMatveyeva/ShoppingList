@@ -1,4 +1,3 @@
-import { style } from "@mui/system";
 import { useState } from "react";
 import styled from "styled-components";
 import { Button, ButtonStyle } from "./Button";
@@ -28,28 +27,51 @@ justify-content: space-between;
 
 export const Addition = ({ close }) => {
   const [categoryValue, setCategoryValue] = useState("");
+  const [date, setDate] = useState(new Map ());
   const [goodsValue, setGoodsValue] = useState("");
   const [itemsAddition, setItemsAddition] = useState(new Set([1]));
 
-  const handleChange = (event) => {
-    event.target.id === "category"
+  const handleChange = (event, id) => {
+    
+const category = event.target.id === "category" ?  event.target.value :  (date?.get(id)?.category || "");
+const goods = event.target.id === "goods" ?  event.target.value :  (date?.get(id)?.goods || "");
+
+    const updateValue = new Map (date);
+
+      updateValue.set(id, {
+        category: category,
+        goods: goods
+      })
+    
+    setDate(new Map(updateValue));
+    console.log(date)
+
+///
+
+   event.target.id === "category"
       ? setCategoryValue(event.target.value)
       : setGoodsValue(event.target.value);
   };
 
   const handleSubmit = (event) => {
-    const item = {
-      category: categoryValue,
-      good: goodsValue,
-    };
-
     event.preventDefault();
+    const dateWithDay = date;
+    dateWithDay.set("day", {day: new Date ()});
+     let shoppingList=[];
+     (Array.from(dateWithDay)).forEach((list => {
+      shoppingList.push(...list)
+      }))
+console.log(shoppingList.filter(list=>typeof(list)==="object"));
+
+   // localStorage.setItem("shoppingList", JSON.stringify(Array.from(shoppingList)));
+    
   };
 
   const handleAdd = () => {
-    const num = itemsAddition.size > 0 ? itemsAddition.size + 1 : 1;
+    const num = Array.from(itemsAddition).reduce( (accumulator, currentValue) => accumulator + currentValue);
+    const newValueSet = itemsAddition.size > 0 ? itemsAddition.size + num : 1;
     const updatedItemsAddition = new Set (itemsAddition);
-    updatedItemsAddition.add (num);
+    updatedItemsAddition.add (newValueSet);
     setItemsAddition(new Set (updatedItemsAddition));
   };
 
@@ -57,6 +79,9 @@ export const Addition = ({ close }) => {
     const updatedItemsAddition = new Set (itemsAddition);
     updatedItemsAddition.delete (item);
     setItemsAddition(new Set (updatedItemsAddition));
+    const updateValue = new Map (date);
+    updateValue.delete(item);
+    setDate(() => new Map (updateValue));
   }
   
   return (
@@ -66,9 +91,9 @@ export const Addition = ({ close }) => {
         <FormBody 
         key={item} 
         id={item}
-        categoryValue={categoryValue}
-        goodsValue={goodsValue}
-        handleChange={handleChange}/>
+        categoryValue={date?.get(item)?.category || ""}
+        goodsValue={date?.get(item)?.goods || ""}
+        handleChange={(event) => handleChange(event, item)}/>
         {itemsAddition.size > 1 &&
         <CloseIconAddition onClick= {() => handleRemove (item)}/>
 }

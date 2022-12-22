@@ -25,7 +25,7 @@ return (
           </div>
           <div style={{display: "flex", justifyContent: "center", marginTop: "10px"}}>
           <Label htmlFor="goods">Enter goods:</Label>
-          <Textarea  value={goodsValue} id="goods" required onChange={handleChange} minlength="10"/>
+          <Textarea  value={goodsValue} id="goods" required  onChange={handleChange} minlength="10"/>
           </div>
          
         </Wrapper>
