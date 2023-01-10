@@ -3,19 +3,16 @@ import { Button } from "./Button";
 import CloseIcon from '@mui/icons-material/Close';
 import { useState } from "react";
 
-export const Substrate = styled.div`
-  position: absolute;
- width: 100%;
- height: 100%;
-  background-color: #c7c7c3;
-  border: 2px solid #000;
-  box-shadow: 24;
-  `;
+// export const Substrate = styled.div`
+//   position: absolute;
+//  width: 100%;
+//  height: 100%;
+//   background-color: #c7c7c3;
+//   border: 2px solid #000;
+//   box-shadow: 24;
+//   `;
 
 export const Wrapper = styled.div`
- position: absolute;
- width: 100%;
- height: 100%;
  display: flex;
  justify-content: center;
  align-items: center;
@@ -49,8 +46,8 @@ export const Modal = ({open, children, close,}) => {
     return (
         open &&
         <>
-        <Substrate onClick={close}>
-        </Substrate>
+        {/* <Substrate onClick={close}>
+        </Substrate> */}
         <Wrapper>
         <ModalWindow>
         <CloseIconMui onClick={close}/>

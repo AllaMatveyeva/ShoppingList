@@ -1,6 +1,7 @@
 import {  useState } from "react";
 import styled from "styled-components";
 import { Addition } from "./Addition";
+import BasicMenu from "./BasicMenu";
 import { Button } from "./Button";
 import { addItemButtonText } from "./buttonText";
 import {  Modal } from "./Modal";
@@ -23,13 +24,24 @@ const handleOpen = () => setOpen (true);
 
 const handleClose = () => setOpen (false);
 
+const shoppingList = JSON.parse(localStorage.getItem("shoppingList"));
+
 return (
         <>
-        <Wrapper>
+        <div style={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column", marginTop:"200px"}}>
+        <div>
+        {shoppingList && shoppingList.map((list,index)=>
+        
+        <BasicMenu list={list}/>
+        
+        )}
+        </div>
+        {!open &&
         <Button onClick={handleOpen} buttonText = {addItemButtonText}>
         </Button>
-        </Wrapper>
-         <Modal 
+        }
+        </div>
+        <Modal 
          open = {open}
          close = {handleClose}
          >
