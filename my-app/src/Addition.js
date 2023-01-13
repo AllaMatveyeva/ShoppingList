@@ -34,6 +34,14 @@ display: inline-block;
 export const Input = styled.input`
 margin-left: 20px;
 width: ${props => props.size && props.size};
+border: 2px solid #dadada;
+    border-radius: 7px;
+    &&:focus{
+    outline: none;
+    border-color: #9ecaed;
+    box-shadow: 0 0 10px #9ecaed;
+    }
+    
 `;
 
 export const InputFile = styled.input`
@@ -82,8 +90,8 @@ export const Addition = ({ close }) => {
          name: updateValue.get(itemNumber)?.name,
           number: updateValue.get(itemNumber)?.number,
           image: result,
-          size: updateValue.size,
-        }
+          id: updateValue.get(itemNumber)?.id
+           }
        )
     
     setGoodsValue(new Map(updateValue));
@@ -119,8 +127,8 @@ const image = event.target.id === "image" ?  event.target.files[0] :  (goodsValu
     updateValue.set(id,
          {
          name: name,
-          number: number,
-          size: updateValue.size
+         number: number,
+         id:id
          }
        )
     
@@ -176,10 +184,10 @@ const image = event.target.id === "image" ?  event.target.files[0] :  (goodsValu
 console.log(item);
           return (
           <div  key={item} 
-          style={{display: "flex", justifyContent: "center", marginTop: "10px", alignItems: "flex-end"}}>
+          style={{display: "flex", justifyContent: "center", marginTop: "10px", alignItems: "flex-end", flexWrap:"wrap"}}>
           <Label htmlFor="name">Enter goods:</Label>
           <Input type="text" value={goodsValue.name} id="name" placeholder="name" required onChange={(event) => handleChange(event,item)}/>
-          <Input type="number"  id="number" value={goodsValue.number} size="65px" placeholder="number"  onChange={(event) => handleChange(event,item)}/>
+          <Input type="number"  id="number" value={goodsValue.number} size="65px" min="1" placeholder="number"  onChange={(event) => handleChange(event,item)}/>
           <InputFile type="file" id="image" accept="image/*" placeholder="image"  value = {goodsValue.image}  onChange={(event) => handleChange(event,item)}>
             </InputFile>
           <Label htmlFor="image" onClick={(e)=>setItemNumber(item)}>
