@@ -1,46 +1,30 @@
-import styled from "styled-components"
-import { CloseIconMui } from "./Modal";
+import {  GoodImg, Label, Input, InputFile, CloseIconAddition, WrapperFormBody} from "./AdditionStyled";
 
-export const Label = styled.label`
-width: 105px;
-display: inline-block;
-`;
-export const Input = styled.input`
-margin-left: 20px;
-width: ${props => props.size?"50px":"100px"};
-`;
 
-export const Textarea = styled.textarea`
-margin-left: 20px;
-resize: none;
-`
-export const CloseIconAddition = styled(CloseIconMui)`
-align-self: flex-start;
-`;
-export const Wrapper = styled.div`
-margin-right: 15px;
-`
-export const FormBody = ({categoryValue,goodsValue,handleChange, itemsAddition,handleRemove,handleCategoryChange, id}) => {
 
+export const FormBody = ({item, goodsValue, handleChange, fileDataURL, itemsAddition, getItemNumber, handleRemove}) => {
+console.log(item)
  
 return (
-        <Wrapper> 
-          <div>
-          <Label htmlFor="category" >Enter category:</Label>
-          <Input type="text" value={categoryValue} placeholder="category" id="category" required onChange={handleCategoryChange()}/>
-          </div>
-          {Array.from(itemsAddition).map((item) => (
-          <div  key={item} 
-          style={{display: "flex", justifyContent: "center", marginTop: "10px"}}>
-          <Label htmlFor="name">Enter goods:</Label>
-          <Input type="text" width={100} value={goodsValue.name} id="name" placeholder="name" required onChange={handleChange(item)}/>
-          <Input type="number"  id="number" placeholder="number" size={50} onChange={handleChange(item)}/>
-          <Input type="file" id="image" placeholder="image" onChange={handleChange(item)}/>
-          {itemsAddition.size > 1 &&
-        <CloseIconAddition onClick= {() => handleRemove (item)}/>
+        <>
+          <div style={{display: "flex", width: "100%", justifyContent:"space-between"}}>
+        <Label htmlFor="name">Enter good:</Label>
+        {itemsAddition.size > 1 &&
+      <CloseIconAddition onClick= {() => handleRemove (item)}/>
 }
-          </div>
-))}
-        </Wrapper>
+        </div>
+        <WrapperFormBody  key={item}>
+        <Input type="text" value={goodsValue.name} id="name" placeholder="good's name" required onChange={(event) => handleChange(event,item)}/>
+        <Input type="number"  id="number" value={goodsValue.number} size="65px" min="1" placeholder="number"  onChange={(event) => handleChange(event,item)}/>
+        <InputFile type="file" id="image" accept="image/*" placeholder="image"  value = {goodsValue.image}  onChange={(event) => handleChange(event,item)}>
+          </InputFile>
+        <Label htmlFor="image" onClick={()=>getItemNumber(item)} style={{marginLeft:"20px", marginBottom: "10px"}}>
+          {fileDataURL.has(item) ? 
+           <GoodImg src={fileDataURL.get(item)} alt="Good image"  width="50" height="50"/> : "Load good image"} </Label>
+       
+        </WrapperFormBody>
+        <hr/>
+        </>
     )
 }
+//<FormBody item={item} itemsAddition={itemsAddition} fileDataURL={fileDataURL} goodsValue={goodsValue} handleChange={handleChange} getItemNumber={getItemNumber} handleRemove={handleRemove}/>

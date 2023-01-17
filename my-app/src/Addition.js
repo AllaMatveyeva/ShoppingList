@@ -1,66 +1,9 @@
-import { useEffect, useState } from "react";
-import styled from "styled-components";
-import { Button, ButtonStyle } from "./Button";
+import { useEffect, useRef, useState } from "react";
+import { Button } from "./Button";
 import { addbuttonText, saveButtonText } from "./buttonText";
 import { FormBody } from "./FormBody";
-import { CloseIconMui } from "./Modal";
-
-export const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  border-radius: 20px;
-  font-family: roboto;
-font-size: 17px;
-`;
-export const Submit = styled(ButtonStyle)``;
-
-
-export const GoodImg = styled.img`
-object-fit: cover;
-display: block;
-margin-top: -10px;
-`
-export const ButtonBlock  = styled.div`
-display: flex;
-justify-content: space-between;
- margin-top: 15px;
-`
-
-export const Label = styled.label`
-width: 105px;
-display: inline-block;
-`;
-export const Input = styled.input`
-margin-left: 20px;
-width: ${props => props.size && props.size};
-border: 2px solid #dadada;
-    border-radius: 7px;
-    &&:focus{
-    outline: none;
-    border-color: #9ecaed;
-    box-shadow: 0 0 10px #9ecaed;
-    }
-    
-`;
-
-export const InputFile = styled.input`
-
-  height: 1px;
-  width: 1px;
-  
-  margin-left: 20px;
-`;
-
-export const Textarea = styled.textarea`
-margin-left: 20px;
-resize: none;
-`
-export const CloseIconAddition = styled(CloseIconMui)`
-align-self: flex-start;
-`;
-export const Wrapper = styled.div`
-margin-right: 15px;`
+import { getNewMapValue } from "./utils/getNewMapValue";
+import { Form, Submit, ButtonBlock, Label, Input, Wrapper } from "./AdditionStyled";
 
 export const Addition = ({ close }) => {
   const [categoryValue, setCategoryValue] = useState("");
@@ -73,30 +16,17 @@ export const Addition = ({ close }) => {
   useEffect (() => {
     let fileReader, isCancel = false;
     fileReader = new FileReader();
-   
-    if (file) {
+    console.log(goodsValue)
+   if (file) {
       fileReader.onload = (e)=> {
         const {result} = e.target;
-        console.log(e.target)
         if (result && !isCancel) {
-          const updatedValue = new Map(fileDataURL);
-          updatedValue.set(itemNumber,result)
-          
-          setFileDataURL(new Map (updatedValue));
-          
-          const updateValue = new Map (goodsValue);
-    updateValue.set(itemNumber,
-         {
-         name: updateValue.get(itemNumber)?.name,
-          number: updateValue.get(itemNumber)?.number,
-          image: result,
-          id: updateValue.get(itemNumber)?.id
-           }
-       )
-    
-    setGoodsValue(new Map(updateValue));
-
-        }
+          setFileDataURL( getNewMapValue(fileDataURL,itemNumber,result));
+         const good = goodsValue.get(itemNumber);
+         console.log(good)
+         const value = getValueForGoodsValue(good?.name, good?.number, result);
+          setGoodsValue(getNewMapValue(goodsValue, itemNumber,value));
+   }
       }
       fileReader.readAsDataURL(file);
     }
@@ -106,8 +36,16 @@ export const Addition = ({ close }) => {
         fileReader.abort();
       }
     }
-  },[file])
-  
+  },[file]);
+
+ 
+  const getValueForGoodsValue = (...theArgs) => ({
+    name: theArgs[0],
+    number: theArgs[1],
+    image:theArgs[2],
+    id:categoryValue + theArgs[0] + Date()
+  });
+
   const handleCategoryChange = (event) => {
     setCategoryValue( event.target.value)
   };
@@ -118,26 +56,16 @@ if (event.target.id ==="image") {
   const file = event.target.files[0];
  setFile(file);
 }
-
-const name = event.target.id === "name" ?  event.target.value :  (goodsValue?.get(id)?.name || "");
-const number = event.target.id === "number" ?  event.target.value :  (goodsValue?.get(id)?.number || "");
-const image = event.target.id === "image" ?  event.target.files[0] :  (goodsValue?.get(id)?.image || "");
-
-    const updateValue = new Map (goodsValue);
-    updateValue.set(id,
-         {
-         name: name,
-         number: number,
-         id:id
-         }
-       )
-    
-    setGoodsValue(new Map(updateValue));
-  };
+const good = goodsValue?.get(id);
+const name = event.target.id === "name" ?  event.target.value :  (good?.name || "");
+const number = event.target.id === "number" ?  event.target.value :  (good?.number || "");
+const image = event.target.id === "image" ?  fileDataURL.get(id) :  (good?.image || "");
+const value = getValueForGoodsValue (name, number, image);
+setGoodsValue(getNewMapValue (goodsValue, id, value));
+ };
 
   const handleSubmit = (event) => {
-    //event.preventDefault();
-    const shoppingList = [{
+   const shoppingList = [{
       category: categoryValue,
       goods: Array.from(goodsValue.values()),
       day: new Date(),
@@ -150,8 +78,7 @@ const image = event.target.id === "image" ?  event.target.files[0] :  (goodsValu
     } })
     const updateShoppingList = oldShoppingList?.filter(list=>list.category!==shoppingList[0].category);
    const newShoppingList = oldShoppingList ? shoppingList.concat(updateShoppingList) : shoppingList;
-   console.log(updateShoppingList)
-    localStorage.setItem("shoppingList", JSON.stringify(newShoppingList));
+   localStorage.setItem("shoppingList", JSON.stringify(newShoppingList));
   };
 
   const handleAdd = () => {
@@ -171,32 +98,22 @@ const image = event.target.id === "image" ?  event.target.files[0] :  (goodsValu
     setGoodsValue(() => new Map (updateValue));
   }
   
+  const getItemNumber =(item) => {
+    setItemNumber(item);
+  }
+
   return (
-    <Form onSubmit={handleSubmit}>
-     
-        <div style={{display: "flex", margin: "15px"}}>
+    <Form autocomplete="off" onSubmit={handleSubmit}>
+     <div style={{display: "flex", margin: "15px"}}>
          <Wrapper> 
           <div>
           <Label htmlFor="category">Enter category:</Label>
           <Input type="text" value={categoryValue} placeholder="category" id="category" required onChange={(event)=>handleCategoryChange(event)}/>
           </div>
-          {Array.from(itemsAddition).map((item) => {
-console.log(item);
-          return (
-          <div  key={item} 
-          style={{display: "flex", justifyContent: "center", marginTop: "10px", alignItems: "flex-end", flexWrap:"wrap"}}>
-          <Label htmlFor="name">Enter goods:</Label>
-          <Input type="text" value={goodsValue.name} id="name" placeholder="name" required onChange={(event) => handleChange(event,item)}/>
-          <Input type="number"  id="number" value={goodsValue.number} size="65px" min="1" placeholder="number"  onChange={(event) => handleChange(event,item)}/>
-          <InputFile type="file" id="image" accept="image/*" placeholder="image"  value = {goodsValue.image}  onChange={(event) => handleChange(event,item)}>
-            </InputFile>
-          <Label htmlFor="image" onClick={(e)=>setItemNumber(item)}>
-            {fileDataURL.has(item) ? 
-             <GoodImg src={fileDataURL.get(item)} alt="Good image"  width="50" height="50"/> : "Load good image"} </Label>
-         {itemsAddition.size > 1 &&
-        <CloseIconAddition onClick= {() => handleRemove (item)}/>
-}
-          </div>
+          {Array.from(itemsAddition).map((item,index) => {
+            return (
+            <FormBody item={item} id={item} key = {index} itemsAddition={itemsAddition} fileDataURL={fileDataURL} goodsValue={goodsValue} handleChange={handleChange} getItemNumber={getItemNumber} handleRemove={handleRemove}/>
+          
 )})}
         </Wrapper>
         </div>

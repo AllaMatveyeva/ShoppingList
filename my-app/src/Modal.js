@@ -13,7 +13,8 @@ export const Substrate = styled.div`
  `;
 
 export const Wrapper = styled.div`
-
+margin-top: 50px;
+    margin-bottom: 10px;
  display: flex;
  justify-content: center;
  align-items: center;
