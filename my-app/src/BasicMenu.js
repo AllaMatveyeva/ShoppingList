@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { ButtonStyle } from "./Button";
 import { CloseIconAddition } from "./AdditionStyled"
 import { MenuItems } from "./MenuItem";
+import { DragCategory } from "./dragCategory";
 
 export const ButtonCategory = styled(ButtonStyle)`
 width: 300px;
@@ -26,7 +27,7 @@ border-radius: 50px;
 }
 `;
 
-export default function BasicMenu({ list, handleDeleteItem }) {
+export default function BasicMenu({ list, handleDeleteItem, originalIndex, moveCategory, findCategory }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -37,20 +38,13 @@ export default function BasicMenu({ list, handleDeleteItem }) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  
 
  return (
-    list.goods.length > 0 &&
+    list?.goods?.length > 0 &&
+    
     <div>
-      <ButtonCategory
-        id="basic-button"
-        aria-controls={open ? "basic-menu" : undefined}
-        aria-haspopup="true"
-        aria-expanded={open ? "true" : undefined}
-        onClick={handleClick}
-        width={`${list.goods.length*50}%`}
-      >
-        {`${list.category} (${list.goods.length})`}
-      </ButtonCategory>
+      <DragCategory open={open} handleClick = {handleClick} list = {list} originalIndex={originalIndex} findCategory={findCategory} moveCategory={moveCategory}></DragCategory> 
       <MuiMenu
         id="basic-menu"
         anchorEl={anchorEl}
@@ -63,7 +57,6 @@ export default function BasicMenu({ list, handleDeleteItem }) {
       >
          <CloseIconAddition style={{alignSelf:"flex-end"}} onClick={() => handleClose()}></CloseIconAddition>
         {list.goods?.map((good,index) => {
-          console.log(good.id)
           return (
          <MenuItems key={good.id} good={good} list={list} handleDeleteItem={handleDeleteItem}/>
         )})}
@@ -71,6 +64,7 @@ export default function BasicMenu({ list, handleDeleteItem }) {
       </MuiMenu>
     
     </div>
+    
     
   );
 }
