@@ -74,11 +74,21 @@ export const ShoppingList = (props) => {
       });
       setShoppingListView (updateShoppingListView);
 localStorage.setItem("shoppingList", JSON.stringify(updateShoppingListView))},
-    [findCategory, shoppingListView, setShoppingListView],)
+    [findCategory, shoppingListView, setShoppingListView],);
 
+
+const deleteCategory = useCallback(
+    (id) => {
+      const { index } = findCategory(id);
+      const updateShoppingListView =new Array (...shoppingListView);
+      updateShoppingListView.splice(index,1);
+      setShoppingListView (updateShoppingListView);
+localStorage.setItem("shoppingList", JSON.stringify(updateShoppingListView))},
+    [findCategory, shoppingListView, setShoppingListView],);
 
   const [, drop] = useDrop(() => ({
-    accept: ItemTypes.CATEGORY }))
+    accept: ItemTypes.CATEGORY}));
+    
 
 
   return (
@@ -98,6 +108,7 @@ localStorage.setItem("shoppingList", JSON.stringify(updateShoppingListView))},
                   handleDeleteItem={handleDeleteItem}
                   findCategory={findCategory}
                   moveCategory={moveCategory}
+                  deleteCategory={deleteCategory}
                 />
               ))}
           </div>

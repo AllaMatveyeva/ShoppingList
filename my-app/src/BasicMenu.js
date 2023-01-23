@@ -27,7 +27,7 @@ border-radius: 50px;
 }
 `;
 
-export default function BasicMenu({ list, handleDeleteItem, originalIndex, moveCategory, findCategory }) {
+export default function BasicMenu({ list, handleDeleteItem, originalIndex, moveCategory, findCategory, deleteCategory }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -44,7 +44,7 @@ export default function BasicMenu({ list, handleDeleteItem, originalIndex, moveC
     list?.goods?.length > 0 &&
     
     <div>
-      <DragCategory open={open} handleClick = {handleClick} list = {list} originalIndex={originalIndex} findCategory={findCategory} moveCategory={moveCategory}></DragCategory> 
+      <DragCategory open={open} handleClick = {handleClick} list = {list} originalIndex={originalIndex} findCategory={findCategory} moveCategory={moveCategory} deleteCategory={deleteCategory}></DragCategory> 
       <MuiMenu
         id="basic-menu"
         anchorEl={anchorEl}
