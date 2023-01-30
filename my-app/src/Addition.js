@@ -5,8 +5,6 @@ import { FormBody } from "./FormBody";
 import { getNewMapValue } from "./utils/getNewMapValue";
 import { Form, Submit, ButtonBlock, Label, Input, Wrapper } from "./AdditionStyled";
 
-//const categories = JSON.parse(localStorage.getItem("shoppingList")).map(list => list.category);
-
 export const Addition = () => {
   const [categoryValue, setCategoryValue] = useState("");
   const [fileDataURL, setFileDataURL] = useState(new Map());
@@ -50,9 +48,7 @@ export const Addition = () => {
 
   const handleCategoryChange = (event) => {
     setCategoryValue( event.target.value);
-    // const categoryComplete = categories.filter(category=>category.startsWith(event.target.value));
-    // console.log(categoryComplete)
-  };
+   };
 
   const handleChange = (event,id) => {
     

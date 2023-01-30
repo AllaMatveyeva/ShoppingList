@@ -24,12 +24,16 @@ text-align: center;
 
 export const MenuItems = ({good,list, handleDeleteItem}) => {
 return (
+  <div style={{display:"flex", width: "100%",justifyContent: "space-between"}}>
+  
     <MuiMenuItem>
             <ItemValue as="div">{good.name}</ItemValue>
             {good.number && <ItemValue>amount: {good.number}</ItemValue>}
             {good.image && <ItemValue as="img" src={good.image} alt="good" width="50" height="50" style={{objectFit:"contain", maxHeight:"30px"}}></ItemValue>}
-            <CloseIconAddition style={{marginLeft:"-15px"}} onClick={() => handleDeleteItem(list, good.id)}></CloseIconAddition>
+            
           </MuiMenuItem>
+          <CloseIconAddition style={{marginLeft:"-15px"}} onClick={() => handleDeleteItem(list, good.id)}></CloseIconAddition>
+          </div>
 )
 
 }

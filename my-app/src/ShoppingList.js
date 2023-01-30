@@ -94,7 +94,7 @@ localStorage.setItem("shoppingList", JSON.stringify(updateShoppingListView))},
   return (
     <>
       {!open ? (
-        <Container
+        <Container 
         >
           <div className="categoryBlock" ref={drop}
           >

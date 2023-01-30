@@ -2,24 +2,26 @@
 import { ButtonCategory } from "./BasicMenu"
 import { useDrag, useDrop,  DragPreviewImage } from 'react-dnd'
 import { ItemTypes } from "./React DnD/dragTypes"
-import Cart from "./cart.png"
+import Cart from "./img/cart.png"
+import Trash from "./img/trash.png"
 
-const CartImg = Cart;
+const cart = Trash;
 export function DragCategory ({open, handleClick, list, originalIndex, moveCategory, findCategory, deleteCategory }) {
+  
     const [{ isDragging }, drag, preview] = useDrag(() => ({
       item: {id: list.categoryId, originalIndex},
       type: ItemTypes.CATEGORY,
       collect: (monitor) => ({
-        isDragging: monitor.isDragging(),
+      isDragging: monitor.isDragging(),
       }),
       end: (item, monitor) => {
-        const { id: droppedId, originalIndex } = item;
+       const { id: droppedId, originalIndex } = item;
         const didDrop = monitor.didDrop();
         const pozition = monitor.getClientOffset();
-        const xPozition = pozition?.x < 200;
-         if (xPozition) {
+        const xLeftPozition = pozition?.x < 200;
+         if (xLeftPozition) {
           deleteCategory(droppedId)}; 
-       if (!didDrop && !xPozition) {
+       if (!didDrop && !xLeftPozition) {
           moveCategory(droppedId, originalIndex)
         }
       },
@@ -27,11 +29,18 @@ export function DragCategory ({open, handleClick, list, originalIndex, moveCateg
     [list.categoryId, originalIndex, moveCategory],
   );
 
-  const [, drop] = useDrop(
+  const [{isDelete}, drop] = useDrop(
     () => ({
       accept: ItemTypes.CATEGORY,
-     
-      hover({ id: draggedId }) {
+      collect:(monitor)=>({
+      isDelete: (monitor.getInitialSourceClientOffset()?.x - monitor.getSourceClientOffset()?.x) > 50,
+     }),
+      hover({ id: draggedId }, monitor) {
+        const start=(monitor.getInitialSourceClientOffset()?.x);
+       const offset = (monitor.getSourceClientOffset()?.x);
+      const res=((start/(start-offset)));
+      console.log(res<6 && res>0)
+      
         if (draggedId !== list.categoryId) {
           const { index: overIndex } = findCategory(list.categoryId);
           moveCategory(draggedId, overIndex);
@@ -45,7 +54,7 @@ export function DragCategory ({open, handleClick, list, originalIndex, moveCateg
 return (
   
 <ButtonCategory
-style={{opacity: isDragging ? 1:  0.7, cursor: isDragging ? 'move' : 'crosshair' }}
+style={{opacity: isDragging ? 1:  0.7, position:"relative"}}
         id="basic-button"
         aria-controls={open ? "basic-menu" : undefined}
         aria-haspopup="true"
@@ -53,6 +62,9 @@ style={{opacity: isDragging ? 1:  0.7, cursor: isDragging ? 'move' : 'crosshair'
         onClick={handleClick}
         ref={(node) => drag(drop(node))}
        >
+        {isDragging && isDelete &&
+        <img src={cart} width="30px" height="30px" alt="trash" style={{position: "absolute", top: "50%", left:"10px", transform:"translateY(-50%)"}}></img>
+}
         {`${list.category} (${list.goods.length})`}
       </ButtonCategory>
       

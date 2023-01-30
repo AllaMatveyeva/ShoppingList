@@ -23,6 +23,7 @@ border-radius: 50px;
 .MuiMenu-list{
   display: flex;
     flex-direction: column;
+    background-color: aliceblue;
      padding: 15px 20px;
 }
 `;
@@ -58,7 +59,10 @@ export default function BasicMenu({ list, handleDeleteItem, originalIndex, moveC
          <CloseIconAddition style={{alignSelf:"flex-end"}} onClick={() => handleClose()}></CloseIconAddition>
         {list.goods?.map((good,index) => {
           return (
+            <div>
          <MenuItems key={good.id} good={good} list={list} handleDeleteItem={handleDeleteItem}/>
+         <hr/>
+         </div>
         )})}
         
       </MuiMenu>

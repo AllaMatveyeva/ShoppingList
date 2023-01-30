@@ -47,9 +47,10 @@ color: #3c16c0;
 export const Input = styled.input`
 margin-left: 20px;
 margin-bottom: 15px;
-width: ${props => props.size && props.size};
-border: 2px solid #dadada;
-    border-radius: 7px;
+width: ${props => props.size ? props.size : props.accept ? "1px":""};
+height: ${props=> props.accept && "1px"};
+border: ${props=> props.accept ? "none" : "2px solid #dadada"};
+border-radius: 7px;
     &&:focus{
     outline: none;
     border-color: #9ecaed;
@@ -58,12 +59,7 @@ border: 2px solid #dadada;
     
 `;
 
-export const InputFile = styled.input`
 
-  height: 1px;
-  width: 1px;
-    
-`;
 
 export const Textarea = styled.textarea`
 margin-left: 20px;
