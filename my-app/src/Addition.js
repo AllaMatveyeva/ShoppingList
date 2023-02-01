@@ -4,14 +4,21 @@ import { addbuttonText, saveButtonText } from "./buttonText";
 import { FormBody } from "./FormBody";
 import { getNewMapValue } from "./utils/getNewMapValue";
 import { Form, Submit, ButtonBlock, Label, Input, Wrapper } from "./AdditionStyled";
+import { getJsonValue } from "./utils/getJsonValue";
+import { useDispatch, useSelector } from "react-redux";
+import { category, good } from "./redux/selectors";
+import { changeCategory, changeGood } from "./redux/actions";
 
 export const Addition = () => {
-  const [categoryValue, setCategoryValue] = useState("");
+  //const [categoryValue, setCategoryValue] = useState("");
   const [fileDataURL, setFileDataURL] = useState(new Map());
   const [itemNumber, setItemNumber] = useState(1);
   const [file, setFile] = useState(null);
-  const [goodsValue, setGoodsValue] = useState(new Map());
+  //const [goodsValue, setGoodsValue] = useState(new Map());
   const [itemsAddition, setItemsAddition] = useState(new Set([1]));
+  const dispatch = useDispatch();
+const categoryValue = useSelector (category);
+const goodsValue = useSelector(good);
 
   useEffect (() => {
     let fileReader, isCancel = false;
@@ -25,7 +32,7 @@ export const Addition = () => {
          const good = goodsValue.get(itemNumber);
          console.log(good)
          const value = getValueForGoodsValue(good?.name, good?.number, result);
-          setGoodsValue(getNewMapValue(goodsValue, itemNumber,value));
+         dispatch (changeGood(getNewMapValue(goodsValue, itemNumber,value)));
    }
       }
       fileReader.readAsDataURL(file);
@@ -47,7 +54,7 @@ export const Addition = () => {
   });
 
   const handleCategoryChange = (event) => {
-    setCategoryValue( event.target.value);
+   dispatch(changeCategory( event.target.value));
    };
 
   const handleChange = (event,id) => {
@@ -61,7 +68,7 @@ const name = event.target.id === "name" ?  event.target.value :  (good?.name || 
 const number = event.target.id === "number" ?  event.target.value :  (good?.number || "");
 const image = event.target.id === "image" ?  fileDataURL.get(id) :  (good?.image || "");
 const value = getValueForGoodsValue (name, number, image);
-setGoodsValue(getNewMapValue (goodsValue, id, value));
+dispatch (changeGood(getNewMapValue (goodsValue, id, value)));
  };
 
   const handleSubmit = (event) => {
@@ -72,7 +79,7 @@ setGoodsValue(getNewMapValue (goodsValue, id, value));
       day: new Date(),
     }];
 
-    const oldShoppingList = (JSON.parse (localStorage.getItem("shoppingList")));
+    const oldShoppingList = getJsonValue("shoppingList");
     oldShoppingList?.forEach((list) => {
     if ( list.category===shoppingList[0].category ) {
       shoppingList[0].goods=(shoppingList[0].goods).concat(list.goods);
@@ -96,7 +103,7 @@ setGoodsValue(getNewMapValue (goodsValue, id, value));
     setItemsAddition(new Set (updatedItemsAddition));
     const updateValue = new Map (goodsValue);
     updateValue.delete(item);
-    setGoodsValue(() => new Map (updateValue));
+     dispatch (changeGood(new Map (updateValue)));
   }
   
   const getItemNumber =(item) => {

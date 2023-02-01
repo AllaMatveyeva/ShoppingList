@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import {useSelector} from "react-redux"
 import styled from "styled-components";
 import { Addition } from "./Addition";
 import BasicMenu from "./BasicMenu";
@@ -8,8 +9,11 @@ import { Modal } from "./Modal";
 import { useDrop } from 'react-dnd'
 import { ItemTypes } from "./React DnD/dragTypes";
 import update from 'immutability-helper'
-const shoppingList = JSON.parse(localStorage.getItem("shoppingList"));
+import { shopList } from "./redux/selectors";
+import { getJsonValue } from "./utils/getJsonValue";
 
+
+const shoppingList = getJsonValue("shoppingList");
 export const Container = styled.div`
 display: flex;
 justify-content: center;
@@ -20,7 +24,7 @@ flex-direction: column;
 export const ShoppingList = (props) => {
   const [open, setOpen] = useState(false);
   const [shoppingListView, setShoppingListView] = useState(shoppingList);
-
+//const shopListState = useSelector(shopList);
   const handleOpen = () => setOpen(true);
 
   const handleClose = () => setOpen(false);
