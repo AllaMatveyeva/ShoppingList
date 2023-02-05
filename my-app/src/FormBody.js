@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import {
   GoodImg,
   Label,
@@ -5,17 +6,20 @@ import {
   CloseIconAddition,
   WrapperFormBody,
 } from "./AdditionStyled";
+import { good } from "./redux/selectors";
 
 export const FormBody = ({
   item,
-  goodsValue,
+  
   handleChange,
   fileDataURL,
   itemsAddition,
   getItemNumber,
   handleRemove,
 }) => {
-  
+ 
+  const goods = useSelector(good);
+  const goodValue=(goods.filter(good=>good.key===item))[0]
   const getBody = (
     type,
     value,
@@ -57,9 +61,9 @@ export const FormBody = ({
         )}
       </div>
       <WrapperFormBody key={item}>
-        {getBody("text", goodsValue.name, "name", "good's name", true)}
-        {getBody("number", goodsValue.number,"number","number",false,"65px","1" )}
-        {getBody("file",goodsValue.image,"image","image",false, "","", "image/*")}
+        {getBody("text", goodValue?.name || "", "name", "good's name", true)}
+        {getBody("number", goodValue?.number || "","number","number",false,"65px","1" )}
+        {getBody("file","","image","image",false, "","", "image/*")}
         <Label
           htmlFor="image"
           onClick={() => getItemNumber(item)}

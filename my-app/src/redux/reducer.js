@@ -1,6 +1,6 @@
 const inishialState = {
     category: "",
-    good: new Map(),
+    good: [],
     items: []
 }
 

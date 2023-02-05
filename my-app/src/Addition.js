@@ -14,25 +14,36 @@ export const Addition = () => {
   const [fileDataURL, setFileDataURL] = useState(new Map());
   const [itemNumber, setItemNumber] = useState(1);
   const [file, setFile] = useState(null);
-  //const [goodsValue, setGoodsValue] = useState(new Map());
+ // const [goodsValue, setGoodsValue] = useState([]);
+ // const [goodsValue, setGoodsValue] = useState(new Map());
   const [itemsAddition, setItemsAddition] = useState(new Set([1]));
   const dispatch = useDispatch();
 const categoryValue = useSelector (category);
-const goodsValue = useSelector(good);
+const goodsValue= useSelector(good);
+//const goodsValue = useSelector(good);
 
   useEffect (() => {
     let fileReader, isCancel = false;
     fileReader = new FileReader();
-    console.log(goodsValue)
    if (file) {
       fileReader.onload = (e)=> {
         const {result} = e.target;
         if (result && !isCancel) {
           setFileDataURL( getNewMapValue(fileDataURL,itemNumber,result));
-         const good = goodsValue.get(itemNumber);
+         
+         const good = goodsValue.filter(good=>good.key ===itemNumber);
          console.log(good)
-         const value = getValueForGoodsValue(good?.name, good?.number, result);
-         dispatch (changeGood(getNewMapValue(goodsValue, itemNumber,value)));
+         const value = getValueForGoodsValue(good[0]?.name, good[0]?.number, result,itemNumber);
+         
+         let updateGoodsValue = [...goodsValue];
+         if (good.length > 0) {
+          updateGoodsValue = updateGoodsValue.map(goodValue=>goodValue.key===itemNumber? value: goodValue);
+        } else {
+          updateGoodsValue.push(value)
+        }
+         
+        dispatch(changeGood(updateGoodsValue))
+        // setGoodsValue(getNewMapValue(goodsValue, itemNumber,value));
    }
       }
       fileReader.readAsDataURL(file);
@@ -50,7 +61,8 @@ const goodsValue = useSelector(good);
     name: theArgs[0],
     number: theArgs[1],
     image:theArgs[2],
-    id:categoryValue + theArgs[0] + Date()
+    id:categoryValue + theArgs[0] + Date(),
+    key:theArgs[3]
   });
 
   const handleCategoryChange = (event) => {
@@ -63,12 +75,22 @@ if (event.target.id ==="image") {
   const file = event.target.files[0];
  setFile(file);
 }
-const good = goodsValue?.get(id);
-const name = event.target.id === "name" ?  event.target.value :  (good?.name || "");
-const number = event.target.id === "number" ?  event.target.value :  (good?.number || "");
-const image = event.target.id === "image" ?  fileDataURL.get(id) :  (good?.image || "");
-const value = getValueForGoodsValue (name, number, image);
-dispatch (changeGood(getNewMapValue (goodsValue, id, value)));
+//const good = goodsValue?.get(id);
+let updateGoodsValue = [...goodsValue];
+const good = (updateGoodsValue?.filter(goodValue=>goodValue.key===id));
+const name = event.target.id === "name" ?  event.target.value :  (good[0]?.name || "");
+const number = event.target.id === "number" ?  event.target.value :  (good[0]?.number || "");
+const image = event.target.id === "image" ?  fileDataURL.get(id) :  (good[0]?.image || "");
+const value = getValueForGoodsValue (name, number, image,id);
+
+if (good.length > 0) {
+  updateGoodsValue = updateGoodsValue.map(goodValue=>goodValue.key===id? value: goodValue);
+} else {
+  updateGoodsValue.push(value)
+}
+ 
+dispatch(changeGood(updateGoodsValue))
+//setGoodsValue(updateGoodsValue);
  };
 
   const handleSubmit = (event) => {
@@ -101,14 +123,15 @@ dispatch (changeGood(getNewMapValue (goodsValue, id, value)));
     const updatedItemsAddition = new Set (itemsAddition);
     updatedItemsAddition.delete (item);
     setItemsAddition(new Set (updatedItemsAddition));
-    const updateValue = new Map (goodsValue);
-    updateValue.delete(item);
-     dispatch (changeGood(new Map (updateValue)));
+    const newGoodsValue = goodsValue;
+    const updatedGoodsValue = newGoodsValue.filter(goodValue=>goodValue.key!==item);
+    dispatch(changeGood(updatedGoodsValue))
   }
   
   const getItemNumber =(item) => {
     setItemNumber(item);
   }
+//const goods = goodsValue;
 
   return (
     <Form autocomplete="off" onSubmit={handleSubmit}>
@@ -120,7 +143,7 @@ dispatch (changeGood(getNewMapValue (goodsValue, id, value)));
           </div>
           {Array.from(itemsAddition).map((item,index) => {
             return (
-            <FormBody item={item} id={item} key = {index} itemsAddition={itemsAddition} fileDataURL={fileDataURL} goodsValue={goodsValue} handleChange={handleChange} getItemNumber={getItemNumber} handleRemove={handleRemove}/>
+            <FormBody item={item} id={item} key = {index} itemsAddition={itemsAddition} fileDataURL={fileDataURL}  handleChange={handleChange} getItemNumber={getItemNumber} handleRemove={handleRemove}/>
           
 )})}
         </Wrapper>
