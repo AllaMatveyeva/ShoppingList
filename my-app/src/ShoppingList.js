@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Addition } from "./Addition";
 import BasicMenu from "./BasicMenu";
 import { Button } from "./Button";
-import { addItemButtonText } from "./buttonText";
+import { addItemButtonText } from "./text";
 import { Modal } from "./Modal";
 import { useDrop } from 'react-dnd'
 import { ItemTypes } from "./React DnD/dragTypes";
@@ -44,7 +44,7 @@ export const ShoppingList = (props) => {
     );
     const result = updateShop.map((shoppingListView) =>
     shoppingListView.category === list.category
-        ? new Object({ category: shoppingListView.category, goods: goodSelect })
+        ? new Object({ category: shoppingListView.category, categoryId:shoppingListView.categoryId, goods: goodSelect })
         : shoppingListView
     );
     setShoppingListView(result);
@@ -54,7 +54,7 @@ export const ShoppingList = (props) => {
   const findCategory = useCallback(
     (id) => {
       let categoryIndex = "";
-      const category = shoppingListView.find((category,index) => { 
+     const category = shoppingListView.find((category,index) => { 
         const isCurrentCategory = `${category.categoryId}` === id;
         if (isCurrentCategory) {categoryIndex = index};
         return `${category.categoryId}` === id});
@@ -84,16 +84,26 @@ localStorage.setItem("shoppingList", JSON.stringify(updateShoppingListView))},
 const deleteCategory = useCallback(
     (id) => {
       const { index } = findCategory(id);
-      const updateShoppingListView =new Array (...shoppingListView);
+      const updateShoppingListView = new Array (...shoppingListView);
       updateShoppingListView.splice(index,1);
       setShoppingListView (updateShoppingListView);
 localStorage.setItem("shoppingList", JSON.stringify(updateShoppingListView))},
     [findCategory, shoppingListView, setShoppingListView],);
 
+    const editCategory = useCallback(
+      (id,item) => {
+        const { category, index } = findCategory(id);
+        const updateShoppingListView = new Array (...shoppingListView);
+      updateShoppingListView.splice(index,1,item);
+        setShoppingListView (updateShoppingListView);
+  localStorage.setItem("shoppingList", JSON.stringify(updateShoppingListView))},
+      [findCategory, shoppingListView, setShoppingListView],);
+
+
   const [, drop] = useDrop(() => ({
     accept: ItemTypes.CATEGORY}));
     
-
+console.log(shoppingListView)
 
   return (
     <>
@@ -113,6 +123,7 @@ localStorage.setItem("shoppingList", JSON.stringify(updateShoppingListView))},
                   findCategory={findCategory}
                   moveCategory={moveCategory}
                   deleteCategory={deleteCategory}
+                  editCategory = {editCategory}
                 />
               ))}
           </div>

@@ -1,11 +1,14 @@
 
-import { ButtonCategory } from "./BasicMenu"
-import { useDrag, useDrop,  DragPreviewImage } from 'react-dnd'
-import { ItemTypes } from "./React DnD/dragTypes"
-import Cart from "./img/cart.png"
-import Trash from "./img/trash.png"
+import { ButtonCategory } from "./BasicMenu";
+import { useDrag, useDrop,  DragPreviewImage } from 'react-dnd';
+import { ItemTypes } from "./React DnD/dragTypes";
+import Cart from "./img/cart.png";
+import Trash from "./img/trash.png";
+import Pencil from "./img/pencil.png";
 
-const cart = Trash;
+const pencil = Pencil;
+const trash = Trash;
+
 export function DragCategory ({open, handleClick, list, originalIndex, moveCategory, findCategory, deleteCategory }) {
   
     const [{ isDragging }, drag, preview] = useDrag(() => ({
@@ -39,8 +42,7 @@ export function DragCategory ({open, handleClick, list, originalIndex, moveCateg
         const start=(monitor.getInitialSourceClientOffset()?.x);
        const offset = (monitor.getSourceClientOffset()?.x);
       const res=((start/(start-offset)));
-      console.log(res<6 && res>0)
-      
+     
         if (draggedId !== list.categoryId) {
           const { index: overIndex } = findCategory(list.categoryId);
           moveCategory(draggedId, overIndex);
@@ -63,9 +65,10 @@ style={{opacity: isDragging ? 1:  0.7, position:"relative"}}
         ref={(node) => drag(drop(node))}
        >
         {isDragging && isDelete &&
-        <img src={cart} width="30px" height="30px" alt="trash" style={{position: "absolute", top: "50%", left:"10px", transform:"translateY(-50%)"}}></img>
+        <img src={trash} width="30px" height="30px" alt="trash" style={{position: "absolute", top: "50%", left:"10px", transform:"translateY(-50%)"}}></img>
 }
         {`${list.category} (${list.goods.length})`}
+       
       </ButtonCategory>
       
 

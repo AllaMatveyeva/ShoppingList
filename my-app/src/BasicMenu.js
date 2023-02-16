@@ -25,42 +25,64 @@ border-radius: 50px;
     flex-direction: column;
     background-color: aliceblue;
      padding: 15px 20px;
+     max-height: 350px;
+     ::-webkit-scrollbar {
+background-color: #d2d8e9;
+width: 10px;
+};
+::-webkit-scrollbar-thumb { 
+  background-color: #b3c4d2;
+};
+   
+overflow-y: auto;
+
 }
 `;
 
-export default function BasicMenu({ list, handleDeleteItem, originalIndex, moveCategory, findCategory, deleteCategory }) {
+export default function BasicMenu({ list, handleDeleteItem, originalIndex, moveCategory, findCategory, deleteCategory, editCategory }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const menuPozitionY = anchorEl?.getBoundingClientRect().y
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
+    
   };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
-  
+ 
+console.log(anchorEl?.getBoundingClientRect().y);
 
  return (
     list?.goods?.length > 0 &&
     
     <div>
-      <DragCategory open={open} handleClick = {handleClick} list = {list} originalIndex={originalIndex} findCategory={findCategory} moveCategory={moveCategory} deleteCategory={deleteCategory}></DragCategory> 
+      <DragCategory open={open}  handleClick = {handleClick} list = {list} originalIndex={originalIndex} findCategory={findCategory} moveCategory={moveCategory} deleteCategory={deleteCategory}></DragCategory> 
       <MuiMenu
         id="basic-menu"
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
         style={{borderRadius:"50px !important"}}
+        anchorOrigin={{
+          vertical: menuPozitionY > 350 ? 'top' : "bottom",
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: menuPozitionY > 350 ? 'bottom' : "top",
+          horizontal: 'center',
+        }}
         MenuListProps={{
           "aria-labelledby": "basic-button",
         }}
       >
-         <CloseIconAddition style={{alignSelf:"flex-end"}} onClick={() => handleClose()}></CloseIconAddition>
+         <CloseIconAddition style={{alignSelf:"center"}} closeMenu="true" onClick={() => handleClose()}></CloseIconAddition>
         {list.goods?.map((good,index) => {
           return (
-            <div>
-         <MenuItems key={good.id} good={good} list={list} handleDeleteItem={handleDeleteItem}/>
+            <div key={good.id}>
+         <MenuItems  good={good} list={list} handleDeleteItem={handleDeleteItem} editCategory={editCategory}/>
          <hr/>
          </div>
         )})}

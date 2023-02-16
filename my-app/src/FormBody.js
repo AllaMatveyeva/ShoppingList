@@ -5,21 +5,26 @@ import {
   Input,
   CloseIconAddition,
   WrapperFormBody,
+  DeleteIcon,
 } from "./AdditionStyled";
 import { good } from "./redux/selectors";
 
 export const FormBody = ({
   item,
-  
   handleChange,
   fileDataURL,
   itemsAddition,
   getItemNumber,
   handleRemove,
+  value,
+  image,
+  labelText,
+  
 }) => {
  
   const goods = useSelector(good);
-  const goodValue=(goods.filter(good=>good.key===item))[0]
+  const goodValue=(goods.filter(good=>good.key===item))[0];
+  console.log(goodValue)
   const getBody = (
     type,
     value,
@@ -55,23 +60,23 @@ export const FormBody = ({
           justifyContent: "space-between",
         }}
       >
-        <Label htmlFor="name">Enter good:</Label>
-        {itemsAddition.size > 1 && (
-          <CloseIconAddition onClick={() => handleRemove(item)} />
+        <Label htmlFor="name">{labelText}</Label>
+        {itemsAddition?.size > 1 && (
+          <DeleteIcon onClick={() => handleRemove(item)} />
         )}
       </div>
       <WrapperFormBody key={item}>
-        {getBody("text", goodValue?.name || "", "name", "good's name", true)}
-        {getBody("number", goodValue?.number || "","number","number",false,"65px","1" )}
+        {getBody("text", value?.name || goodValue?.name || "", "name", "good's name", true)}
+        {getBody("number", value?.number || goodValue?.number || "","number","number",false,"65px","1" )}
         {getBody("file","","image","image",false, "","", "image/*")}
         <Label
           htmlFor="image"
           onClick={() => getItemNumber(item)}
           style={{ marginLeft: "20px", marginBottom: "10px" }}
         >
-          {fileDataURL.has(item) ? (
+          {fileDataURL?.has(item) || image ? (
             <GoodImg
-              src={fileDataURL.get(item)}
+              src={fileDataURL?.get(item) || image}
               alt="Good image"
               width="50"
               height="50"

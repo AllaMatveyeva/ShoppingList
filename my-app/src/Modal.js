@@ -13,8 +13,7 @@ export const Substrate = styled.div`
  `;
 
 export const Wrapper = styled.div`
-margin-top: 50px;
-    margin-bottom: 10px;
+margin-bottom: 10px;
  display: flex;
  justify-content: center;
  align-items: center;
@@ -37,14 +36,15 @@ justify-content: flex-end;
 
 export const CloseIconMui = styled(CloseIcon)`
    font-size: 20px !important;
-   color:  #610c1a !important;
-    font-weight: bold;
-    align-self: flex-end;
+   color: ${props=> props.closeMenu ? "#d2d8e9" : " #610c1a"};
+   color: #610c1a;
+   font-weight: bold;
+   align-self: flex-end;
 `
 
 
 
-export const Modal = ({children, close,}) => {
+export const Modal = ({children, close, edit}) => {
   
     return (
          <>
@@ -52,7 +52,9 @@ export const Modal = ({children, close,}) => {
         </Substrate>
         <Wrapper>
         <ModalWindow>
+         {!edit &&
         <CloseIconMui onClick={close}/>
+         }
         {children}
         <WrapperButton>
         {/* <Button onClick={close} buttonText = {buttonText} min/> */}

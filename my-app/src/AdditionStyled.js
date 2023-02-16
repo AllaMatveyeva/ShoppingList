@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { CloseIconMui } from "./Modal";
 import { ButtonStyle } from "./Button";
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 
 
@@ -40,10 +41,12 @@ justify-content: space-between;
 `
 
 export const Label = styled.label`
+font-family: Roboto;
 width: 105px;
 display: inline-block;
-color: #3c16c0;
+color: #6e96b1;
 `;
+
 export const Input = styled.input`
 margin-left: 20px;
 margin-bottom: 15px;
@@ -65,8 +68,12 @@ export const Textarea = styled.textarea`
 margin-left: 20px;
 resize: none;
 `
-export const CloseIconAddition = styled(CloseIconMui)`
+export const DeleteIcon = styled(DeleteForeverIcon)`
 align-self: flex-start;
 `;
 export const Wrapper = styled.div`
 margin-right: 15px;`
+
+export const CloseIconAddition = styled(CloseIconMui)`
+align-self: flex-start;
+`;
