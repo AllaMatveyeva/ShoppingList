@@ -15,7 +15,6 @@ opacity: 0.5;
 }
 ` 
 export const Button = ({onClick, buttonText, min}) => {
-    console.log(onClick)
     return(
 <ButtonStyle onClick={onClick} min = {min}>
             <span>{buttonText}</span>

@@ -28,7 +28,7 @@ border-radius: 50px;
 }
 `;
 
-export default function BasicMenu({ list, handleDeleteItem, originalIndex, moveCategory, findCategory, deleteCategory }) {
+export default function BasicMenu({ list, handleDeleteItem, originalIndex, moveCategory, findCategory, deleteCategory, editCategory }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -59,8 +59,8 @@ export default function BasicMenu({ list, handleDeleteItem, originalIndex, moveC
          <CloseIconAddition style={{alignSelf:"flex-end"}} onClick={() => handleClose()}></CloseIconAddition>
         {list.goods?.map((good,index) => {
           return (
-            <div>
-         <MenuItems key={good.id} good={good} list={list} handleDeleteItem={handleDeleteItem}/>
+            <div key={good.id}>
+         <MenuItems  good={good} list={list} handleDeleteItem={handleDeleteItem} editCategory={editCategory}/>
          <hr/>
          </div>
         )})}

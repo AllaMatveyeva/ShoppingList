@@ -54,7 +54,7 @@ export const ShoppingList = (props) => {
   const findCategory = useCallback(
     (id) => {
       let categoryIndex = "";
-      const category = shoppingListView.find((category,index) => { 
+     const category = shoppingListView.find((category,index) => { 
         const isCurrentCategory = `${category.categoryId}` === id;
         if (isCurrentCategory) {categoryIndex = index};
         return `${category.categoryId}` === id});
@@ -84,11 +84,21 @@ localStorage.setItem("shoppingList", JSON.stringify(updateShoppingListView))},
 const deleteCategory = useCallback(
     (id) => {
       const { index } = findCategory(id);
-      const updateShoppingListView =new Array (...shoppingListView);
+      const updateShoppingListView = new Array (...shoppingListView);
       updateShoppingListView.splice(index,1);
       setShoppingListView (updateShoppingListView);
 localStorage.setItem("shoppingList", JSON.stringify(updateShoppingListView))},
     [findCategory, shoppingListView, setShoppingListView],);
+
+    const editCategory = useCallback(
+      (id,item) => {
+        const { category, index } = findCategory(id);
+        const updateShoppingListView = new Array (...shoppingListView);
+      updateShoppingListView.splice(index,1,item);
+        setShoppingListView (updateShoppingListView);
+  localStorage.setItem("shoppingList", JSON.stringify(updateShoppingListView))},
+      [findCategory, shoppingListView, setShoppingListView],);
+
 
   const [, drop] = useDrop(() => ({
     accept: ItemTypes.CATEGORY}));
@@ -113,6 +123,7 @@ localStorage.setItem("shoppingList", JSON.stringify(updateShoppingListView))},
                   findCategory={findCategory}
                   moveCategory={moveCategory}
                   deleteCategory={deleteCategory}
+                  editCategory = {editCategory}
                 />
               ))}
           </div>

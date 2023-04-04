@@ -10,7 +10,7 @@ export const  getItemMiddleware = (dispatch, getState) => {
 
 
 export const store = configureStore ({
-    reducer:{
+    reducer: {
         shoppingList: changeShoppingList,
     }
 })
