@@ -3,9 +3,10 @@ import MenuItem from "@mui/material/MenuItem";
 import { CloseIconAddition } from "./AdditionStyled"
 import { ButtonStyle } from "./Button";
 import { Modal } from "./Modal";
-import { Addition } from "./Addition";
 import { useState } from "react";
 import { Editing } from "./Editing";
+import { useFileReader } from "./useFileReader";
+import { useEffect } from "react";
 
 export const MuiMenuItem = styled (MenuItem)`
 display: flex;
@@ -28,19 +29,38 @@ text-align: center;
 
 export const MenuItems = ({good,list, handleDeleteItem, editCategory}) => {
 const [openEditWindow,setOpenEditWindow] = useState(false);
-
+const [file, setFile] = useState(null);
+    const [fileDataURL, setFileDataURL] = useState();
+    const getFile = (file) => setFile(file);
+    const url = useFileReader(file);
+    
+    const getFileDataUrl = (url) => {
+         setFileDataURL(url);
+      };
+    
 const [goodValue, setGoodValue] = useState({
   name: good.name,
   number:good.number,
   image: good.image
 })
 
-const handleChange = (e) => {
+
+
+
+const handleChange = (e,id) => {
 const target = e.target;
 const name = target.id;
-console.log(goodValue)
+
+if (name ==="image") {
+  const file = e.target.files[0];
+   setFile(file);
+   console.log(file)
+}
+
+console.log(`fileDataURL: ${fileDataURL}`);
+console.log(`goodValue.image: ${goodValue.image}`);
 setGoodValue({...goodValue,
- [name]: target.value
+ [name]:name ==="image" ? fileDataURL || goodValue.image : target.value
 }
 )
 }
@@ -67,7 +87,7 @@ const categoryId = list.categoryId;
 
 const handleClose = (e,edit) => {
   console.log(categoryId, newGood)
-  if (edit) editCategory(categoryId,newGood);
+ if (edit) editCategory(categoryId,newGood);
   setOpenEditWindow(false)
 
 } 
@@ -76,7 +96,7 @@ return (
   <div style={{display:"flex", width: "100%",justifyContent: "space-between"}}>
   {openEditWindow ? (
     <Modal>
-      <Editing good={good} editCategory={editCategory} list={list} handleClose={handleClose} handleChange={handleChange} goodValue={goodValue}></Editing>
+      <Editing good={good} id = {categoryId} file = {file} getFile={getFile} getFileDataUrl={getFileDataUrl} editCategory={editCategory} fileDataURLEdit={fileDataURL} list={list} handleClose={handleClose} handleChange={handleChange} goodValue={goodValue}></Editing>
     </Modal>
   ) :
   <>

@@ -18,13 +18,59 @@ export const Addition = () => {
   const dispatch = useDispatch();
 const categoryValue = useSelector (category);
 const goodsValue = useSelector(good);
-
+const [fileDataURL, setFileDataURL] = useState(new Map());
 const categoryList = ["home", "beauty", "drinkables", "groats", "bread", "stationery", ]
 
 
   const handleCategoryChange = (event) => {
    dispatch(changeCategory( event.target.value));
    };
+
+const getFileDataUrl = (url) => {
+  setFileDataURL(getNewMapValue(fileDataURL,itemNumber,url));
+};
+
+   const getValueForGoodsValue = (...theArgs) => ({
+    name: theArgs[0],
+    number: theArgs[1],
+    image:theArgs[2],
+    id:categoryValue + theArgs[0] + Date(),
+    key:theArgs[3]
+  });
+
+  const getUpdatedGoodsValue = (good,value,id) => {
+    let updateGoodsValue = [...goodsValue];
+           if (good.length > 0) {
+            updateGoodsValue = updateGoodsValue.map(goodValue=>goodValue.key===id? value: goodValue);
+          } else {
+            updateGoodsValue.push(value)
+          }
+          dispatch(changeGood(updateGoodsValue))
+  };
+  
+   const handleChange = (event,id) => {
+    
+    if (event.target.id ==="image") {
+      const file = event.target.files[0];
+     getFile(file);
+    }
+    const good = (goodsValue?.filter(good => good.key === id));
+    const name = event.target.id === "name" ?  event.target.value :  (good[0]?.name ||  "");
+    const number = event.target.id === "number" ?  event.target.value :  (good[0]?.number || "");
+    const image = event.target.id === "image" ?  fileDataURL.get(id) :  (good[0]?.image || "");
+    const value = getValueForGoodsValue (name, number, image,id);
+    // setValueForEdit({
+    //   name:name,
+    //   number:number,
+    //   image:image
+    // })
+    getUpdatedGoodsValue(good,value,id);
+    
+    
+    };
+
+
+
 
    const handleSubmit = (event) => {
     //event.preventDefault();
@@ -80,7 +126,7 @@ const getFile = (file) => setFile(file);
           </div>
           {Array.from(itemsAddition).map((item,index) => {
             return (
-            <FormBody item={item} id={item} key = {index} getFile={getFile} itemsAddition={itemsAddition} itemNumber={itemNumber} file={file} getItemNumber={getItemNumber} handleRemove={handleRemove}/>
+            <FormBody item={item} id={item} key = {index} getFile={getFile} handleChange={handleChange} itemsAddition={itemsAddition} itemNumber={itemNumber} file={file} getItemNumber={getItemNumber} handleRemove={handleRemove} getFileDataUrl={getFileDataUrl} fileDataURL={fileDataURL} getValueForGoodsValue={getValueForGoodsValue} getUpdatedGoodsValue={getUpdatedGoodsValue}/>
           
 )})}
         </Wrapper>
