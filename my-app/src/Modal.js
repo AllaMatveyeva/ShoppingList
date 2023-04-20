@@ -38,13 +38,18 @@ justify-content: flex-end;
 export const CloseIconMui = styled(CloseIcon)`
    font-size: 20px !important;
    color:  #610c1a !important;
+   display: ${props=> props.edit&&"none !important"};
     font-weight: bold;
-    align-self: flex-end;
+    align-self: center;
+    @media (max-width: 400px) {
+  width: 0.7em !important;
+  
+}
 `
 
 
 
-export const Modal = ({children, close,}) => {
+export const Modal = ({children, close, edit}) => {
   
     return (
          <>
@@ -52,7 +57,7 @@ export const Modal = ({children, close,}) => {
         </Substrate>
         <Wrapper>
         <ModalWindow>
-        <CloseIconMui onClick={close}/>
+        <CloseIconMui edit={edit} onClick={close}/>
         {children}
         <WrapperButton>
         {/* <Button onClick={close} buttonText = {buttonText} min/> */}

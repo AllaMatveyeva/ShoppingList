@@ -3,10 +3,11 @@ import MenuItem from "@mui/material/MenuItem";
 import { CloseIconAddition } from "./AdditionStyled"
 import { ButtonStyle } from "./Button";
 import { Modal } from "./Modal";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Editing } from "./Editing";
 import { useFileReader } from "./useFileReader";
 import { useEffect } from "react";
+import { trash } from "./dragCategory";
 
 export const MuiMenuItem = styled (MenuItem)`
 display: flex;
@@ -15,8 +16,8 @@ flex-wrap: wrap;
 `;
 
 export const ItemValue = styled(ButtonStyle)`
-margin-right: 15px;
-padding: 10px 10px;
+margin-right: 5px;
+padding: 7px 7px;
 background-color: #d2d8e9;
 color: black;
 margin-bottom: 5px;
@@ -29,74 +30,17 @@ text-align: center;
 
 export const MenuItems = ({good,list, handleDeleteItem, editCategory}) => {
 const [openEditWindow,setOpenEditWindow] = useState(false);
-const [file, setFile] = useState(null);
-    const [fileDataURL, setFileDataURL] = useState();
-    const getFile = (file) => setFile(file);
-    const url = useFileReader(file);
-    
-    const getFileDataUrl = (url) => {
-         setFileDataURL(url);
-      };
-    
-const [goodValue, setGoodValue] = useState({
-  name: good.name,
-  number:good.number,
-  image: good.image
-})
-
-
-
-
-const handleChange = (e,id) => {
-const target = e.target;
-const name = target.id;
-
-if (name ==="image") {
-  const file = e.target.files[0];
-   setFile(file);
-   console.log(file)
-}
-
-console.log(`fileDataURL: ${fileDataURL}`);
-console.log(`goodValue.image: ${goodValue.image}`);
-setGoodValue({...goodValue,
- [name]:name ==="image" ? fileDataURL || goodValue.image : target.value
-}
-)
-}
-
-const update = (list.goods).map((goodLi)=>{
-console.log(goodLi);
-console.log(good)
-if (goodLi.id !== good.id) {return goodLi} else {
-return ({
-id: goodLi.id,
-image: goodValue.image,
-key: goodLi.key,
-name: goodValue.name,
-number: goodValue.number,
-})}});
-
-
-const newGood = {
-...list,
-goods: update
-};
-
 const categoryId = list.categoryId;
+const closeWindow = () => setOpenEditWindow(false);
+const myRef = useRef();
 
-const handleClose = (e,edit) => {
-  console.log(categoryId, newGood)
- if (edit) editCategory(categoryId,newGood);
-  setOpenEditWindow(false)
-
-} 
 
 return (
-  <div style={{display:"flex", width: "100%",justifyContent: "space-between"}}>
+  <div style={{display:"flex", width: "100%",justifyContent: "space-between"}} >
   {openEditWindow ? (
-    <Modal>
-      <Editing good={good} id = {categoryId} file = {file} getFile={getFile} getFileDataUrl={getFileDataUrl} editCategory={editCategory} fileDataURLEdit={fileDataURL} list={list} handleClose={handleClose} handleChange={handleChange} goodValue={goodValue}></Editing>
+    <Modal edit="true" close={()=> setOpenEditWindow(false)}>
+      <hr style={{width:"105%"}}/>
+      <Editing currentGood={good} id = {categoryId} editCategory={editCategory}  list={list} categoryId={categoryId} closeWindow={closeWindow}></Editing>
     </Modal>
   ) :
   <>
@@ -106,7 +50,8 @@ return (
             {good.image && <ItemValue as="img" src={good.image} alt="good" width="50" height="50" style={{objectFit:"contain", maxHeight:"30px"}}></ItemValue>}
             
           </MuiMenuItem>
-          <CloseIconAddition style={{marginLeft:"-15px"}} onClick={() => handleDeleteItem(list, good.id)}></CloseIconAddition>
+          {/* /<CloseIconAddition style={{marginLeft:"-15px"}} onClick={() => handleDeleteItem(list, good.id)}></CloseIconAddition> */}
+          <img src={trash} width="20px" height="20px" alt="trash" style={{marginRight:"25px"}} onClick={() => handleDeleteItem(list, good.id)}></img>
           </>
   }
  

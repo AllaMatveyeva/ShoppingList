@@ -67,6 +67,7 @@ resize: none;
 `
 export const CloseIconAddition = styled(CloseIconMui)`
 align-self: flex-start;
+
 `;
 export const Wrapper = styled.div`
 margin-right: 15px;`

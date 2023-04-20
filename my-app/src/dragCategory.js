@@ -7,7 +7,7 @@ import Trash from "./img/trash.png";
 import Pencil from "./img/pencil.png";
 
 const pencil = Pencil;
-const trash = Trash;
+export const trash = Trash;
 
 export function DragCategory ({open, handleClick, list, originalIndex, moveCategory, findCategory, deleteCategory }) {
   

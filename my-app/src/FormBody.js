@@ -8,7 +8,7 @@ import {
   WrapperFormBody,
 } from "./AdditionStyled";
 
-import {  good } from "./redux/selectors";
+import { good } from "./redux/selectors";
 import { useFileReader } from "./useFileReader";
 
 export const FormBody = ({
@@ -16,7 +16,7 @@ export const FormBody = ({
   itemsAddition,
   getItemNumber,
   handleRemove,
-  val,
+  updatedGood,
   image,
   file,
   itemNumber,
@@ -29,7 +29,7 @@ export const FormBody = ({
 }) => {
  
   const goods = useSelector(good);
- const goodValue=(goods.filter(good=>good.key===item))[0];
+ const goodValue = (goods.filter(good=>good.key===item))[0];
  const url = useFileReader(file);
  
  useEffect( ()=> {
@@ -85,15 +85,15 @@ export const FormBody = ({
         )}
       </div>
       <WrapperFormBody key={item}>
-        {getBody("text", goodValue?.name || val?.name || "", "name", "good's name", true)}
-        {getBody("number",goodValue?.number || val?.number || "","number","number",false,"65px","1" )}
+        {getBody("text", goodValue?.name || updatedGood?.name || "", "name", "good's name", true)}
+        {getBody("number",goodValue?.number || updatedGood?.number || "","number","number",false,"65px","1" )}
         {getBody("file","","image","image",false, "","", "image/*")}
         <Label
           htmlFor="image"
           onClick={() => getItemNumber(item)}
           style={{ marginLeft: "20px", marginBottom: "10px" }}
         >
-          {fileDataURL?.has(item) || fileDataURLEdit || image ? (
+          {fileDataURLEdit || fileDataURL?.has(item)   || image ? (
             <GoodImg
               src={fileDataURLEdit || fileDataURL?.get(item)  || image}
               alt="Good image"
