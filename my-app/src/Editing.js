@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { ButtonBlock} from "./AdditionStyled"
 import { Button } from "./Button"
 import { FormBody } from "./FormBody"
 import {declineButtonText, saveButtonText } from "./buttonText"
-import { useFileReader } from "./useFileReader"
+import { useFileReader } from "./utils/useFileReader"
 
-export const Editing = ({id, editCategory,categoryId, currentGood,list, closeWindow}) => {
+export const Editing = ({id, editCategory,categoryId, currentGood,list, closeWindow, findListHeight}) => {
 const getItemNumber = () => updatedGood.id;
 const [file, setFile] = useState(null);
     const [fileDataURL, setFileDataURL] = useState();
     const getFile = (file) => setFile(file);
-
+const editingRef=useRef()
     
     const getFileDataUrl = (url) => {
          setFileDataURL(url);
@@ -44,8 +44,10 @@ useEffect(() => {
   setUpdatedGood({...updatedGood,
         "image": fileDataURL || updatedGood.image
        }
-       )
-},[fileDataURL]);
+       );
+       file && setFile(file);
+    findListHeight(editingRef.current?.clientHeight)
+},[fileDataURL, file]);
 
 const update = (list.goods).map((good) => {
 if (good.id !== updatedGood.id) {return good} else {
@@ -70,19 +72,17 @@ const handleClose = (e,edit) => {
   closeWindow()
 
 } 
-useEffect(()=>{
-    file && setFile(file)
-},[file])
+
 
     return (
-      <>
-       <FormBody image={updatedGood.image}  fileDataURLEdit={fileDataURL} getFileDataUrl={getFileDataUrl} idCategory={id} editCategory={editCategory} handleChange={handleChange} itemNumber={updatedGood.number} getFile={getFile} file={file} getItemNumber={getItemNumber} updatedGood={updatedGood}  item={updatedGood.number}/>
+      <div ref={editingRef}>
+       <FormBody  image={updatedGood.image}  fileDataURLEdit={fileDataURL} getFileDataUrl={getFileDataUrl} idCategory={id} editCategory={editCategory} handleChange={handleChange} itemNumber={updatedGood.number} getFile={getFile} file={file} getItemNumber={getItemNumber} updatedGood={updatedGood}  item={updatedGood.number}/>
        <ButtonBlock>
        
        <Button buttonText={declineButtonText} min="min" onClick={handleClose}></Button>
        <Button buttonText={saveButtonText} min="min" onClick={(e)=>handleClose(e,true)} ></Button>
        </ButtonBlock>
-       </>
+       </div>
 
     )
 }

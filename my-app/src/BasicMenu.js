@@ -8,6 +8,7 @@ import { MenuItems } from "./MenuItem";
 import { DragCategory } from "./dragCategory";
 import { useRef } from "react";
 import { useEffect } from "react";
+import { Items } from "./Items";
 
 export const ButtonCategory = styled(ButtonStyle)`
 width: 300px;
@@ -24,7 +25,7 @@ export const MuiMenu = styled(Menu)`
 }
 .MuiMenu-paper {
 border-radius: 50px;
-height: 500px;
+
 
 };
 .MuiMenu-list {
@@ -38,10 +39,11 @@ height: 500px;
 
 export default function BasicMenu({ list, handleDeleteItem, originalIndex, moveCategory, findCategory, deleteCategory, editCategory }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
-  
-  const open = Boolean(anchorEl);
-  const myRef = useRef();
+  const [listHeight, setListHeight] = React.useState(100);
 
+  const open = Boolean(anchorEl);
+  
+const findListHeight = (height) => setListHeight(height);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -52,18 +54,17 @@ const handleClose = () => {
     
   };
   
-
  return (
     list?.goods?.length > 0 &&
     
-    <div >
+    <div>
       <DragCategory open={open} handleClick = {handleClick} list = {list} originalIndex={originalIndex} findCategory={findCategory} moveCategory={moveCategory} deleteCategory={deleteCategory}></DragCategory> 
       <MuiMenu 
         id="basic-menu"
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        style={{borderRadius:"50px !important"}}
+        style={{borderRadius:"50px !important", height:`${listHeight}px !important`}}
         MenuListProps={{
           "aria-labelledby": "basic-button",
           
@@ -71,16 +72,8 @@ const handleClose = () => {
         
       >
          <CloseIconAddition style={{marginBottom:"10px", alignSelf:"center"}} onClick={() => handleClose()}></CloseIconAddition>
-         <div>
-        {list.goods?.map((good,index) => {
-          return (
-            <div key={good.id}  >
-         <MenuItems  good={good} list={list} handleDeleteItem={handleDeleteItem} editCategory={editCategory}/>
-         <hr/>
-         </div>
-        )})}
-        </div>
-      </MuiMenu>
+         <Items list={list} handleDeleteItem={handleDeleteItem} editCategory={editCategory} findListHeight={findListHeight}/>
+       </MuiMenu>
     
     </div>
     

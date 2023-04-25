@@ -5,7 +5,6 @@ import { ButtonStyle } from "./Button";
 import { Modal } from "./Modal";
 import { useRef, useState } from "react";
 import { Editing } from "./Editing";
-import { useFileReader } from "./useFileReader";
 import { useEffect } from "react";
 import { trash } from "./dragCategory";
 
@@ -16,7 +15,7 @@ flex-wrap: wrap;
 `;
 
 export const ItemValue = styled(ButtonStyle)`
-margin-right: 5px;
+margin-right: 10px;
 padding: 7px 7px;
 background-color: #d2d8e9;
 color: black;
@@ -28,11 +27,11 @@ text-align: center;
 }
 `;
 
-export const MenuItems = ({good,list, handleDeleteItem, editCategory}) => {
+export const Item = ({good,list, handleDeleteItem, editCategory, findListHeight}) => {
 const [openEditWindow,setOpenEditWindow] = useState(false);
 const categoryId = list.categoryId;
 const closeWindow = () => setOpenEditWindow(false);
-const myRef = useRef();
+
 
 
 return (
@@ -40,7 +39,7 @@ return (
   {openEditWindow ? (
     <Modal edit="true" close={()=> setOpenEditWindow(false)}>
       <hr style={{width:"105%"}}/>
-      <Editing currentGood={good} id = {categoryId} editCategory={editCategory}  list={list} categoryId={categoryId} closeWindow={closeWindow}></Editing>
+      <Editing currentGood={good} id = {categoryId} editCategory={editCategory}  list={list} categoryId={categoryId} closeWindow={closeWindow} findListHeight={findListHeight}></Editing>
     </Modal>
   ) :
   <>

@@ -8,6 +8,7 @@ border-radius: 50px;
 color: #fcfcfc;
 font-family: 'Roboto';
 font-size: 20px;
+margin-right: 10px;
 cursor: pointer;
 &:hover {
 opacity: 0.5;

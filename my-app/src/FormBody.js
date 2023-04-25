@@ -9,7 +9,7 @@ import {
 } from "./AdditionStyled";
 
 import { good } from "./redux/selectors";
-import { useFileReader } from "./useFileReader";
+import { useFileReader } from "./utils/useFileReader";
 
 export const FormBody = ({
   item,
@@ -91,7 +91,7 @@ export const FormBody = ({
         <Label
           htmlFor="image"
           onClick={() => getItemNumber(item)}
-          style={{ marginLeft: "20px", marginBottom: "10px" }}
+          style={{ marginBottom: "10px" }}
         >
           {fileDataURLEdit || fileDataURL?.has(item)   || image ? (
             <GoodImg

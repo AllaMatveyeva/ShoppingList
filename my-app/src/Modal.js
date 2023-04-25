@@ -13,11 +13,13 @@ export const Substrate = styled.div`
  `;
 
 export const Wrapper = styled.div`
-//margin-top: 50px;
-    margin-bottom: 10px;
+margin-bottom: 10px;
  display: flex;
  justify-content: center;
  align-items: center;
+ /* max-height: 500px;
+ overflow-y: auto;
+ overflow-x: hidden; */
  `
 
 export const ModalWindow = styled.div`
