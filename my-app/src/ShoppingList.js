@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import {useSelector} from "react-redux"
+import {useDispatch, useSelector} from "react-redux"
 import styled from "styled-components";
 import { Addition } from "./Addition";
 import BasicMenu from "./BasicMenu";
@@ -11,9 +11,11 @@ import { ItemTypes } from "./React DnD/dragTypes";
 import update from 'immutability-helper'
 import { shopList } from "./redux/selectors";
 import { getJsonValue } from "./utils/getJsonValue";
+import { addItem, deleteGood } from "./redux/actions";
 
 
 const shoppingList = getJsonValue("shoppingList");
+
 export const Container = styled.div`
 display: flex;
 justify-content: center;
@@ -24,17 +26,18 @@ flex-direction: column;
 export const ShoppingList = (props) => {
   const [open, setOpen] = useState(false);
   const [shoppingListView, setShoppingListView] = useState(shoppingList);
-//const shopListState = useSelector(shopList);
   const handleOpen = () => setOpen(true);
-
+  const dispatch = useDispatch();
   const handleClose = () => setOpen(false);
+  
 
   useEffect(() => {
+   
    const isEveryEmpty = shoppingListView?.every((item) => item?.goods?.length === 0);
     isEveryEmpty && localStorage.clear("shoppingList");
   }, [shoppingListView]);
 
-  const handleDeleteItem = (list, item) => {
+  const handleDeleteItem = useCallback ( (list, item) => {
     const updateShop = new Array(...shoppingListView);
     const categorySelect = updateShop.filter(
       (shoppingListView) => shoppingListView.category === list.category
@@ -44,14 +47,16 @@ export const ShoppingList = (props) => {
     );
     const result = updateShop.map((shoppingListView) =>
     shoppingListView.category === list.category
-        ? new Object({ category: shoppingListView.category, goods: goodSelect })
+        ? new Object({ category: shoppingListView.category, categoryId: shoppingListView.categoryId, goods: goodSelect })
         : shoppingListView
     );
     setShoppingListView(result);
+    
     localStorage.setItem("shoppingList", JSON.stringify(result));
-  };
+    
+  },[shoppingListView,dispatch]);
 
-  const findCategory = useCallback(
+  const findCategory = useCallback (
     (id) => {
       let categoryIndex = "";
      const category = shoppingListView.find((category,index) => { 
@@ -67,7 +72,7 @@ export const ShoppingList = (props) => {
     [shoppingListView],
   )
 
-  const moveCategory = useCallback(
+  const moveCategory = useCallback (
     (id, atIndex) => {
       const { category, index } = findCategory(id);
       const updateShoppingListView = update(shoppingListView, {
@@ -78,19 +83,19 @@ export const ShoppingList = (props) => {
       });
       setShoppingListView (updateShoppingListView);
 localStorage.setItem("shoppingList", JSON.stringify(updateShoppingListView))},
-    [findCategory, shoppingListView, setShoppingListView],);
+    [findCategory, shoppingListView],);
 
 
-const deleteCategory = useCallback(
+const deleteCategory = useCallback (
     (id) => {
       const { index } = findCategory(id);
       const updateShoppingListView = new Array (...shoppingListView);
       updateShoppingListView.splice(index,1);
       setShoppingListView (updateShoppingListView);
 localStorage.setItem("shoppingList", JSON.stringify(updateShoppingListView))},
-    [findCategory, shoppingListView, setShoppingListView],);
+    [findCategory, shoppingListView],);
 
-    const editCategory = useCallback(
+    const editCategory = useCallback (
       (id,item) => {
         const { category, index } = findCategory(id);
         const updateShoppingListView = new Array (...shoppingListView);

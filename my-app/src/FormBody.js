@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   GoodImg,
@@ -11,8 +11,7 @@ import {
 import { good } from "./redux/selectors";
 import { useFileReader } from "./utils/useFileReader";
 
-export const FormBody = ({
-  item,
+export const FormBody = memo (function FormBody({ item,
   itemsAddition,
   getItemNumber,
   handleRemove,
@@ -23,26 +22,25 @@ export const FormBody = ({
   handleChange,
   getValueForGoodsValue,
   getUpdatedGoodsValue,
-  getFileDataUrl,
   fileDataURL,
-  fileDataURLEdit
-}) => {
+  fileDataURLEdit 
+}) {
+ const goods = useSelector(good);
+ const goodValue = useMemo(() => (goods.filter(good=>good.key===item))[0],[goods,item]);
  
-  const goods = useSelector(good);
- const goodValue = (goods.filter(good=>good.key===item))[0];
- const url = useFileReader(file);
  
- useEffect( ()=> {
-  if (url)  {
-    getFileDataUrl(url)
+
+ useEffect(()=> {
+  if (fileDataURL)  {
+    //getFileDataUrl(url)
   
     const good = goods?.filter(good => good.key === itemNumber);
     
     if (getUpdatedGoodsValue) {
-         const value = getValueForGoodsValue(good[0]?.name ||goodValue?.name , good[0]?.number || goodValue?.number, url,itemNumber);
+         const value = getValueForGoodsValue(good[0]?.name || goodValue?.name , good[0]?.number || goodValue?.number, fileDataURL.get(itemNumber),itemNumber);
          getUpdatedGoodsValue(good,value,itemNumber);}
   };
-  },[url])
+  },[fileDataURL])
 
   const getBody = (
     type,
@@ -88,14 +86,14 @@ export const FormBody = ({
         {getBody("text", goodValue?.name || updatedGood?.name || "", "name", "good's name", true)}
         {getBody("number",goodValue?.number || updatedGood?.number || "","number","number",false,"65px","1" )}
         {getBody("file","","image","image",false, "","", "image/*")}
-        <Label
+        <Label 
           htmlFor="image"
           onClick={() => getItemNumber(item)}
           style={{ marginBottom: "10px" }}
         >
-          {fileDataURLEdit || fileDataURL?.has(item)   || image ? (
+          {fileDataURLEdit?.get(item) || fileDataURL?.get(item)   || image ? (
             <GoodImg
-              src={fileDataURLEdit || fileDataURL?.get(item)  || image}
+              src={fileDataURLEdit?.get(item) || fileDataURL?.get(item)   || image}
               alt="Good image"
               width="50"
               height="50"
@@ -108,4 +106,4 @@ export const FormBody = ({
       <hr />
     </>
   );
-};
+});

@@ -37,7 +37,7 @@ const closeWindow = () => setOpenEditWindow(false);
 return (
   <div style={{display:"flex", width: "100%",justifyContent: "space-between"}} >
   {openEditWindow ? (
-    <Modal edit="true" close={()=> setOpenEditWindow(false)}>
+    <Modal edit="true" close={closeWindow}>
       <hr style={{width:"105%"}}/>
       <Editing currentGood={good} id = {categoryId} editCategory={editCategory}  list={list} categoryId={categoryId} closeWindow={closeWindow} findListHeight={findListHeight}></Editing>
     </Modal>

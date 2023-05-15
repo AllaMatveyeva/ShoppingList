@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "./Button";
 import { addbuttonText, saveButtonText } from "./buttonText";
 import { FormBody } from "./FormBody";
@@ -7,7 +7,8 @@ import { Form, Submit, ButtonBlock, Label, Input, Wrapper } from "./AdditionStyl
 import { getJsonValue } from "./utils/getJsonValue";
 import { useDispatch, useSelector } from "react-redux";
 import { category, good } from "./redux/selectors";
-import { changeCategory, changeGood } from "./redux/actions";
+import { addItem, changeCategory, changeGood } from "./redux/actions";
+import { useFileReader } from "./utils/useFileReader";
 
 
 export const Addition = () => {
@@ -18,27 +19,26 @@ export const Addition = () => {
   const dispatch = useDispatch();
 const categoryValue = useSelector (category);
 const goodsValue = useSelector(good);
-const [fileDataURL, setFileDataURL] = useState(new Map());
-const categoryList = ["home", "beauty", "drinkables", "groats", "bread", "stationery", ]
+const fileDataURL = useFileReader(file,itemNumber)
+
 
 
   const handleCategoryChange = (event) => {
    dispatch(changeCategory( event.target.value));
    };
 
-const getFileDataUrl = (url) => {
-  setFileDataURL(getNewMapValue(fileDataURL,itemNumber,url));
-};
 
-   const getValueForGoodsValue = (...theArgs) => ({
+
+   const getValueForGoodsValue = useCallback((...theArgs) => ({
     name: theArgs[0],
     number: theArgs[1],
     image:theArgs[2],
     id:categoryValue + theArgs[0] + Date(),
     key:theArgs[3]
-  });
+  }),[]);
 
-  const getUpdatedGoodsValue = (good,value,id) => {
+  const getUpdatedGoodsValue = useCallback ((good,value,id) => {
+    
     let updateGoodsValue = [...goodsValue];
            if (good.length > 0) {
             updateGoodsValue = updateGoodsValue.map(goodValue=>goodValue.key===id? value: goodValue);
@@ -46,35 +46,28 @@ const getFileDataUrl = (url) => {
             updateGoodsValue.push(value)
           }
           dispatch(changeGood(updateGoodsValue))
-  };
+  },[goodsValue]);
   
-   const handleChange = (event,id) => {
-    
-    if (event.target.id ==="image") {
+   const handleChange = useCallback ((event,id) => {
+   if (event.target.id ==="image") {
       const file = event.target.files[0];
-     getFile(file);
+     setFile(file);
     }
     const good = (goodsValue?.filter(good => good.key === id));
+    
     const name = event.target.id === "name" ?  event.target.value :  (good[0]?.name ||  "");
     const number = event.target.id === "number" ?  event.target.value :  (good[0]?.number || "");
-    const image = event.target.id === "image" ?  fileDataURL.get(id) :  (good[0]?.image || "");
-    const value = getValueForGoodsValue (name, number, image,id);
-    // setValueForEdit({
-    //   name:name,
-    //   number:number,
-    //   image:image
-    // })
+    const image = event.target.id === "image" ?  fileDataURL?.get(id) :  (good[0]?.image || "");
+     const value = getValueForGoodsValue (name, number, image,id);
     getUpdatedGoodsValue(good,value,id);
-    
-    
-    };
+   
+     },[goodsValue]);
 
 
 
 
    const handleSubmit = (event) => {
-    //event.preventDefault();
-   const shoppingList = [{
+    const shoppingList = [{
       category: categoryValue,
       categoryId: categoryValue + Date(),
       goods: Array.from(goodsValue.values()),
@@ -88,20 +81,18 @@ const getFileDataUrl = (url) => {
     } })
     const updateShoppingList = oldShoppingList?.filter(list=>list.category!==shoppingList[0].category);
    const newShoppingList = oldShoppingList ? shoppingList.concat(updateShoppingList) : shoppingList;
-   console.log(categoryValue)
    localStorage.setItem("shoppingList", JSON.stringify(newShoppingList));
-   
   };
 
-  const handleAdd = () => {
+  const handleAdd = useCallback (() => {
     const num = Array.from(itemsAddition).reduce( (accumulator, currentValue) => accumulator + currentValue);
     const newValueSet = itemsAddition.size > 0 ? itemsAddition.size + num : 1;
     const updatedItemsAddition = new Set (itemsAddition);
     updatedItemsAddition.add (newValueSet);
     setItemsAddition(new Set (updatedItemsAddition));
-  };
+  },[itemsAddition]);
 
-  const handleRemove = (item) => {
+  const handleRemove = useCallback ((item) => {
     const updatedItemsAddition = new Set (itemsAddition);
     updatedItemsAddition.delete (item);
     setItemsAddition(new Set (updatedItemsAddition));
@@ -109,12 +100,13 @@ const getFileDataUrl = (url) => {
     const updatedGoodsValue = newGoodsValue.filter(goodValue=>goodValue.key!==item);
     dispatch(changeGood(updatedGoodsValue));
     setFile(null)
-  }
+  },[itemsAddition])
   
-  const getItemNumber =(item) => {
+  const getItemNumber = useCallback ((item) => {
     setItemNumber(item);
-  }
-const getFile = (file) => setFile(file);
+  },[itemNumber])
+
+const getFile = useCallback ((file) => setFile(file),[file]);
 
   return (
     <Form autocomplete="off" onSubmit={handleSubmit}>
@@ -126,7 +118,7 @@ const getFile = (file) => setFile(file);
           </div>
           {Array.from(itemsAddition).map((item,index) => {
             return (
-            <FormBody item={item} id={item} key = {index} getFile={getFile} handleChange={handleChange} itemsAddition={itemsAddition} itemNumber={itemNumber} file={file} getItemNumber={getItemNumber} handleRemove={handleRemove} getFileDataUrl={getFileDataUrl} fileDataURL={fileDataURL} getValueForGoodsValue={getValueForGoodsValue} getUpdatedGoodsValue={getUpdatedGoodsValue}/>
+            <FormBody item={item} id={item} key = {index} getFile={getFile} handleChange={handleChange} itemsAddition={itemsAddition} itemNumber={itemNumber} file={file} getItemNumber={getItemNumber} handleRemove={handleRemove}  fileDataURL={fileDataURL} getValueForGoodsValue={getValueForGoodsValue} getUpdatedGoodsValue={getUpdatedGoodsValue}/>
           
 )})}
         </Wrapper>

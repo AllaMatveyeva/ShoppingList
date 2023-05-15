@@ -8,13 +8,12 @@ import { useFileReader } from "./utils/useFileReader"
 export const Editing = ({id, editCategory,categoryId, currentGood,list, closeWindow, findListHeight}) => {
 const getItemNumber = () => updatedGood.id;
 const [file, setFile] = useState(null);
-    const [fileDataURL, setFileDataURL] = useState();
+    //const [fileDataURL, setFileDataURL] = useState();
+    const fileDataURL = useFileReader(file, id)
     const getFile = (file) => setFile(file);
 const editingRef=useRef()
     
-    const getFileDataUrl = (url) => {
-         setFileDataURL(url);
-      };
+  
     
 const [updatedGood, setUpdatedGood] = useState({
   name: currentGood.name,
@@ -23,26 +22,27 @@ const [updatedGood, setUpdatedGood] = useState({
 })
 
 
-
+console.log(`id"${id}`)
 
 const handleChange = (e,id) => {
 const target = e.target;
 const name = target.id;
-
+console.log(`changeid"${id}`)
+console.log(name)
 if (name ==="image") {
   const file = e.target.files[0];
    setFile(file);
  }
 
  setUpdatedGood({...currentGood,
- [name]:name ==="image" ? fileDataURL : target.value
+ [name]:name ==="image" ? fileDataURL?.get(id) : target.value
 }
 )
 }
 
 useEffect(() => {
   setUpdatedGood({...updatedGood,
-        "image": fileDataURL || updatedGood.image
+        "image": fileDataURL?.get(id) || updatedGood.image
        }
        );
        file && setFile(file);
@@ -76,7 +76,7 @@ const handleClose = (e,edit) => {
 
     return (
       <div ref={editingRef}>
-       <FormBody  image={updatedGood.image}  fileDataURLEdit={fileDataURL} getFileDataUrl={getFileDataUrl} idCategory={id} editCategory={editCategory} handleChange={handleChange} itemNumber={updatedGood.number} getFile={getFile} file={file} getItemNumber={getItemNumber} updatedGood={updatedGood}  item={updatedGood.number}/>
+       <FormBody  image={updatedGood.image}  fileDataURLEdit={fileDataURL}  idCategory={id} editCategory={editCategory} handleChange={handleChange} itemNumber={updatedGood.number} getFile={getFile} file={file} getItemNumber={getItemNumber} updatedGood={updatedGood}  item={updatedGood.number}/>
        <ButtonBlock>
        
        <Button buttonText={declineButtonText} min="min" onClick={handleClose}></Button>

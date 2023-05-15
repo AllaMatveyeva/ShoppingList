@@ -10,7 +10,7 @@ const pencil = Pencil;
 export const trash = Trash;
 
 export function DragCategory ({open, handleClick, list, originalIndex, moveCategory, findCategory, deleteCategory }) {
-  
+ 
     const [{ isDragging }, drag, preview] = useDrag(() => ({
       item: {id: list.categoryId, originalIndex},
       type: ItemTypes.CATEGORY,

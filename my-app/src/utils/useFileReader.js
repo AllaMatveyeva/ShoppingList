@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
+import { getNewMapValue } from "./getNewMapValue";
 
-export const useFileReader = (file) => {
+export const useFileReader = (file,id) => {
     const [fileDataURL, setFileDataURL] = useState();
-
+    
     useEffect(()=>{
         let fileReader, isCancel = false;
         fileReader = new FileReader();
@@ -10,7 +11,7 @@ export const useFileReader = (file) => {
           fileReader.onload = (e)=> {
             const {result} = e.target;
             if (result && !isCancel) {
-              setFileDataURL(result);
+              setFileDataURL(getNewMapValue(fileDataURL,id,result));
             }
         }
         fileReader.readAsDataURL(file);
@@ -21,6 +22,6 @@ export const useFileReader = (file) => {
           fileReader.abort();
         }
       }
-    })
+    },[file])
 return fileDataURL
 }

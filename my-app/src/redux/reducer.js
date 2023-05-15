@@ -1,3 +1,5 @@
+import { ADD_ITEM, CHANGE_CATEGORY,CHANGE_GOODS,DELETE_CATEGORY,DELETE_GOOD  } from "./actions"
+
 const inishialState = {
     category: "",
     good: [],
@@ -6,20 +8,35 @@ const inishialState = {
 
 export function changeShoppingList (state=inishialState, action)  {
 switch (action.type){
-    case "itemAdded":
+    case ADD_ITEM:
         return {
             ...state,
+            items: action.payload
             
            
         }
-        case "categoryChanged":
+        case CHANGE_CATEGORY:
         return {
             ...state,
             category: action.payload
             
            
         }
-        case "goodChanged":
+        case CHANGE_GOODS:
+        return {
+            ...state,
+            good: action.payload
+            
+           
+        }
+        case DELETE_CATEGORY:
+        return {
+            ...state,
+            items: action.payload
+            
+           
+        }
+        case DELETE_GOOD:
         return {
             ...state,
             good: action.payload
