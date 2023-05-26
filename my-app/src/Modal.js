@@ -1,71 +1,21 @@
-import styled from "styled-components"
-import { Button } from "./Button";
-import CloseIcon from '@mui/icons-material/Close';
-import { useState } from "react";
+import styled from "styled-components";
 
-export const Substrate = styled.div`
-  position: absolute;
- width: 100%;
- height: 100%;
- z-index: -100;
-    top: 0;
-    left: 0;
- `;
-
-export const Wrapper = styled.div`
-margin-bottom: 10px;
- display: flex;
- justify-content: center;
- align-items: center;
- /* max-height: 500px;
- overflow-y: auto;
- overflow-x: hidden; */
- `
-
-export const ModalWindow = styled.div`
-display: flex;
-flex-direction: column;
-justify-content: space-between;
-
-border-radius: 20px;
-padding: 10px;
-background-color: aliceblue;
-`;
-
-export const WrapperButton = styled.div`
-justify-content: flex-end;
-  display: flex;
-`;
-
-export const CloseIconMui = styled(CloseIcon)`
-   font-size: 20px !important;
-   color:  #610c1a !important;
-   display: ${props=> props.edit&&"none !important"};
-    font-weight: bold;
-    align-self: center;
-    @media (max-width: 400px) {
-  width: 0.7em !important;
-  
-}
-`
+import { ModalWindow, Substrate, WrapperModal, CloseIconMui } from "./AdditionStyled";
 
 
 
-export const Modal = ({children, close, edit}) => {
-  
-    return (
-         <>
-        <Substrate onClick={close}>
-        </Substrate>
-        <Wrapper>
+
+
+export const Modal = ({ children, close, edit }) => {
+  return (
+    <>
+      <Substrate onClick={close}/>
+      <WrapperModal edit={edit}>
         <ModalWindow>
-        <CloseIconMui edit={edit} onClick={close}/>
-        {children}
-        <WrapperButton>
-        {/* <Button onClick={close} buttonText = {buttonText} min/> */}
-        </WrapperButton>
-    </ModalWindow>
-    </Wrapper>
+          <CloseIconMui edit={edit} onClick={close}/>
+          {children}
+         </ModalWindow>
+      </WrapperModal>
     </>
-    )
-}
+  );
+};

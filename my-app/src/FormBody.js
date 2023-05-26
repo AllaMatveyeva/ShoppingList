@@ -1,5 +1,5 @@
-import { memo, useEffect, useMemo, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { memo, useEffect, useMemo } from "react";
+import { useSelector } from "react-redux";
 import {
   GoodImg,
   Label,
@@ -9,7 +9,6 @@ import {
 } from "./AdditionStyled";
 
 import { good } from "./redux/selectors";
-import { useFileReader } from "./utils/useFileReader";
 
 export const FormBody = memo (function FormBody({ item,
   itemsAddition,
@@ -17,7 +16,6 @@ export const FormBody = memo (function FormBody({ item,
   handleRemove,
   updatedGood,
   image,
-  file,
   itemNumber,
   handleChange,
   getValueForGoodsValue,
@@ -32,12 +30,10 @@ export const FormBody = memo (function FormBody({ item,
 
  useEffect(()=> {
   if (fileDataURL)  {
-    //getFileDataUrl(url)
-  
-    const good = goods?.filter(good => good.key === itemNumber);
+     const good = goods?.filter(good => good.key === itemNumber);
     
     if (getUpdatedGoodsValue) {
-         const value = getValueForGoodsValue(good[0]?.name || goodValue?.name , good[0]?.number || goodValue?.number, fileDataURL.get(itemNumber),itemNumber);
+         const value = getValueForGoodsValue(good[0]?.name || goodValue?.name, good[0]?.number || goodValue?.number, fileDataURL.get(itemNumber),itemNumber);
          getUpdatedGoodsValue(good,value,itemNumber);}
   };
   },[fileDataURL])
@@ -93,7 +89,7 @@ export const FormBody = memo (function FormBody({ item,
         >
           {fileDataURLEdit?.get(item) || fileDataURL?.get(item)   || image ? (
             <GoodImg
-              src={fileDataURLEdit?.get(item) || fileDataURL?.get(item)   || image}
+              src={fileDataURLEdit?.get(item) || fileDataURL?.get(item) || image}
               alt="Good image"
               width="50"
               height="50"

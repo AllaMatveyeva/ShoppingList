@@ -37,6 +37,7 @@ switch (action.type){
            
         }
         case DELETE_GOOD:
+            
         return {
             ...state,
             good: action.payload

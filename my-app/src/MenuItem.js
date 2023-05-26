@@ -1,61 +1,68 @@
-import styled from "styled-components"
-import MenuItem from "@mui/material/MenuItem";
-import { CloseIconAddition } from "./AdditionStyled"
-import { ButtonStyle } from "./Button";
 import { Modal } from "./Modal";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Editing } from "./Editing";
-import { useEffect } from "react";
-import { trash } from "./dragCategory";
+import Trash from "./img/trash.png";
+import { ItemValue, MuiMenuItem } from "./AdditionStyled";
 
-export const MuiMenuItem = styled (MenuItem)`
-display: flex;
-flex-wrap: wrap;
- min-width:200px;
-`;
+const trash = Trash;
 
-export const ItemValue = styled(ButtonStyle)`
-margin-right: 10px;
-padding: 7px 7px;
-background-color: #d2d8e9;
-color: black;
-margin-bottom: 5px;
-min-width: 100px; 
-text-align: center;
-&&:last-child{
-  margin-right: 0;
-}
-`;
+export const Item = ({
+  good,
+  list,
+  handleDeleteItem,
+  editCategory,
+  findListHeight,
+}) => {
+  const [openEditWindow, setOpenEditWindow] = useState(false);
+  const categoryId = list.categoryId;
+  const closeWindow = () => setOpenEditWindow(false);
 
-export const Item = ({good,list, handleDeleteItem, editCategory, findListHeight}) => {
-const [openEditWindow,setOpenEditWindow] = useState(false);
-const categoryId = list.categoryId;
-const closeWindow = () => setOpenEditWindow(false);
-
-
-
-return (
-  <div style={{display:"flex", width: "100%",justifyContent: "space-between"}} >
-  {openEditWindow ? (
-    <Modal edit="true" close={closeWindow}>
-      <hr style={{width:"105%"}}/>
-      <Editing currentGood={good} id = {categoryId} editCategory={editCategory}  list={list} categoryId={categoryId} closeWindow={closeWindow} findListHeight={findListHeight}></Editing>
-    </Modal>
-  ) :
-  <>
- <MuiMenuItem onClick={() => setOpenEditWindow(true)}>
+  return (
+    <div
+      style={{
+        display: "flex",
+        width: "100%",
+        justifyContent: "space-between",
+      }}
+    >
+      {openEditWindow ? (
+        <Modal edit="true" close={closeWindow}>
+          <hr style={{ width: "105%" }} />
+          <Editing
+            currentGood={good}
+            id={categoryId}
+            editCategory={editCategory}
+            list={list}
+            categoryId={categoryId}
+            closeWindow={closeWindow}
+            findListHeight={findListHeight}
+          ></Editing>
+        </Modal>
+      ) : (
+        <>
+          <MuiMenuItem onClick={() => setOpenEditWindow(true)}>
             <ItemValue as="div">{good.name}</ItemValue>
-            {good.number && <ItemValue>amount: {good.number}</ItemValue>}
-            {good.image && <ItemValue as="img" src={good.image} alt="good" width="50" height="50" style={{objectFit:"contain", maxHeight:"30px"}}></ItemValue>}
-            
+            {good.number && <ItemValue as="div">amount: {good.number}</ItemValue>}
+            {good.image && (
+              <ItemValue
+                as="img"
+                src={good.image}
+                alt="good"
+                width="50"
+                height="50"
+               />
+            )}
           </MuiMenuItem>
-          {/* /<CloseIconAddition style={{marginLeft:"-15px"}} onClick={() => handleDeleteItem(list, good.id)}></CloseIconAddition> */}
-          <img src={trash} width="20px" height="20px" alt="trash" style={{marginRight:"25px"}} onClick={() => handleDeleteItem(list, good.id)}></img>
-          </>
-  }
- 
-          </div>
-  
-)
-
-}
+          <img
+            src={trash}
+            width="20px"
+            height="20px"
+            alt="trash"
+            style={{ marginRight: "25px" }}
+            onClick={() => handleDeleteItem(list, good.id)}
+          ></img>
+        </>
+      )}
+    </div>
+  );
+};
