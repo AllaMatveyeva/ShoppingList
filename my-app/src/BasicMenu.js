@@ -13,8 +13,6 @@ export default function BasicMenu({
   const [listHeight, setListHeight] = React.useState(100);
   const open = Boolean(anchorEl);
 
-  const findListHeight = (height) => setListHeight(height);
-
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -49,7 +47,7 @@ export default function BasicMenu({
             list={list}
             handleDeleteItem={handleDeleteItem}
             editCategory={editCategory}
-            findListHeight={findListHeight}
+            findListHeight={setListHeight}
           />
         </MuiMenu>
       </>

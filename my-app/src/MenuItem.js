@@ -60,7 +60,7 @@ export const Item = ({
             alt="trash"
             style={{ marginRight: "25px" }}
             onClick={() => handleDeleteItem(list, good.id)}
-          ></img>
+          />
         </>
       )}
     </div>

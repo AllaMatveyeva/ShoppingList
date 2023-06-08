@@ -43,11 +43,14 @@ export const ButtonStyle = styled.button`
   border-radius: 50px;
   color: #fcfcfc;
   font-family: "Roboto";
-  font-size: 20px;
+  font-size: 25px;
   margin-right: 10px;
   cursor: pointer;
   &:hover {
     opacity: 0.5;
+  }
+@media (max-width: 375px) {
+    font-size: 20px;
   }
 `;
 
@@ -93,10 +96,9 @@ export const Form = styled.form`
   border-radius: 20px;
   font-family: roboto;
   font-size: 17px;
-  @media (max-width: 415px) {
-  overflow-y: auto;
   max-height: 500px;
-  }
+    overflow-y: auto;
+  
  
 `;
 export const Submit = styled(ButtonStyle)``;
@@ -114,7 +116,7 @@ justify-content: space-between;
 `
 
 export const Label = styled.label`
-width: 105px;
+//width: 105px;
 display: inline-block;
 color: #3c16c0;
 margin-right: 10px;
@@ -155,6 +157,19 @@ left: 50%;
 transform: translate(-50%, -50%);
 width: ${props => props.isMobile ? "50px" : "200px"};
 height: ${props => props.isMobile ? "50px" : "200px"};
+animation: 1s infinite bounce;
+
+  @keyframes bounce {
+  from {
+    top:50%;
+
+  }
+
+  to {
+    top: 40%;
+    
+  }
+}
 `;
 
 export const TrashContainer = styled.div`
@@ -170,21 +185,27 @@ export const MuiMenuItem = styled (MenuItem)`
 display: flex;
 flex-wrap: wrap;
 min-width:200px;
+@media (max-width: 415px) {
+  row-gap: 20px
+  }
+
 `
 
 export const ItemValue = styled(ButtonStyle)`
 margin-right: 10px;
 padding: 7px 7px;
 background-color: #d2d8e9;
+//font-size: 20px;
 color: black;
 margin-bottom: 5px;
 min-width: 100px; 
 text-align: center;
 object-fit: contain;
  max-height: 30px;
-&&:last-child{
+ &&:last-child{
   margin-right: 0;
 }
+
 `
 
 export const ButtonCategory = styled(ButtonStyle)`
@@ -214,6 +235,6 @@ border-radius: 50px;
     flex-direction: column;
     background-color: aliceblue;
      padding: 15px 20px;
-     width: 95%;
+     width: 99%;
 }
 `;

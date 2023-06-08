@@ -28,9 +28,7 @@ export const ShoppingList = () => {
   shoppingListView?.every(
     (item) => item?.goods?.length === 0, shoppingListView))
 
-  useEffect(() => {
-    isEveryEmpty && localStorage.clear("shoppingList");
-  }, [shoppingListView,Droppable]);
+  
 
   const handleDeleteItem = useCallback (
     (list, item) => {
@@ -138,6 +136,10 @@ export const ShoppingList = () => {
   const handleDragUpdate = () => {
 
   };
+  
+  useEffect(() => {
+    isEveryEmpty && localStorage.clear("shoppingList");
+  }, [shoppingListView,Droppable]);
 
   return !open ? (
     <Container>

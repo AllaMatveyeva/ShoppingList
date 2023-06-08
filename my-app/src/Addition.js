@@ -21,9 +21,7 @@ const categoryValue = useSelector (category);
 const goodsValue = useSelector(good);
 const fileDataURL = useFileReader(file,itemNumber)
 
-
-
-  const handleCategoryChange = (event) => {
+const handleCategoryChange = (event) => {
    dispatch(changeCategory( event.target.value));
    };
 
@@ -38,8 +36,7 @@ const fileDataURL = useFileReader(file,itemNumber)
   }),[]);
 
   const getUpdatedGoodsValue = useCallback ((good,value,id) => {
-    
-    let updateGoodsValue = [...goodsValue];
+        let updateGoodsValue = [...goodsValue];
            if (good.length > 0) {
             updateGoodsValue = updateGoodsValue.map(goodValue=>goodValue.key===id? value: goodValue);
           } else {
@@ -61,7 +58,7 @@ const fileDataURL = useFileReader(file,itemNumber)
      const value = getValueForGoodsValue (name, number, image,id);
     getUpdatedGoodsValue(good,value,id);
    
-     },[goodsValue]);
+     },[goodsValue,itemsAddition]);
 
 
 
@@ -92,33 +89,31 @@ const fileDataURL = useFileReader(file,itemNumber)
     setItemsAddition(new Set (updatedItemsAddition));
   },[itemsAddition]);
 
-  const handleRemove = useCallback ((item) => {
+  const handleRemove = useCallback((item) => {
     const updatedItemsAddition = new Set (itemsAddition);
     updatedItemsAddition.delete (item);
     setItemsAddition(new Set (updatedItemsAddition));
-    const newGoodsValue = goodsValue;
-    const updatedGoodsValue = newGoodsValue.filter(goodValue=>goodValue.key!==item);
+    const newGoodsValue = [...goodsValue];
+   const updatedGoodsValue = newGoodsValue.filter(goodValue=>goodValue.key!==item);
+    
     dispatch(changeGood(updatedGoodsValue));
     setFile(null)
-  },[itemsAddition])
+  },[itemsAddition,goodsValue])
   
-  const getItemNumber = useCallback ((item) => {
-    setItemNumber(item);
-  },[itemNumber])
+ 
 
-const getFile = useCallback ((file) => setFile(file),[file]);
 
-  return (
+return (
     <Form autocomplete="off" onSubmit={handleSubmit}>
      <div style={{display: "flex", margin: "15px"}}>
          <Wrapper> 
           <div>
           <Label htmlFor="category">Enter category:</Label>
-          <Input type="text" value={categoryValue} placeholder="category" id="category" required onChange={(event)=>handleCategoryChange(event)}/>
+          <Input type="text"  placeholder="category" id="category" required onChange={(event)=>handleCategoryChange(event)}/>
           </div>
           {Array.from(itemsAddition).map((item,index) => {
             return (
-            <FormBody item={item} id={item} key = {index} getFile={getFile} handleChange={handleChange} itemsAddition={itemsAddition} itemNumber={itemNumber} file={file} getItemNumber={getItemNumber} handleRemove={handleRemove}  fileDataURL={fileDataURL} getValueForGoodsValue={getValueForGoodsValue} getUpdatedGoodsValue={getUpdatedGoodsValue}/>
+            <FormBody item={item} id={item} key = {index} handleChange={handleChange} itemsAddition={itemsAddition} itemNumber={itemNumber} file={file} getItemNumber={setItemNumber} handleRemove={handleRemove}  fileDataURL={fileDataURL} getValueForGoodsValue={getValueForGoodsValue} getUpdatedGoodsValue={getUpdatedGoodsValue}/>
           
 )})}
         </Wrapper>
