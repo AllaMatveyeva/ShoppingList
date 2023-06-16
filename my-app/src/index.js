@@ -1,15 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import App from './App.tsx';
 
 import { Provider } from 'react-redux'
+import { HTMLElementType } from '@mui/utils';
 
  const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 
     <>
-    <App />
+    <App/>
     <div style={{width:"200px", order:3}}></div>
     </>
     

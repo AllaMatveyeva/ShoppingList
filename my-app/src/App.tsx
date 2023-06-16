@@ -4,9 +4,11 @@ import {
   Route,
   Routes
 } from "react-router-dom";
-import { ShoppingList } from "./ShoppingList";
+import React from "react";
+import { ShoppingList } from "./ShoppingList.tsx";
 import { Provider } from "react-redux";
 import { store } from "./redux/store";
+
 
 
 
@@ -18,7 +20,7 @@ function App() {
     
     <Router>
       <Routes>
-    <Route exact path='/' element={<ShoppingList/>} />
+    <Route path='/' element={<ShoppingList/>} />
    </Routes>
     </Router>
         </Provider>

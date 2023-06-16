@@ -12,43 +12,61 @@ import { Container, List, TrashContainer, TrashImg } from "./AdditionStyled";
 import { createPortal } from "react-dom";
 import Trash from "./img/trash.png";
 import { useMemo } from "react";
+import { category } from "./redux/selectors";
+import React from "react";
 
 const trash = Trash;
-const shoppingList = getJsonValue("shoppingList");
 
 
+interface Goods {
+name: string;
+number: string;
+image: string;
+id: string;
+}
+
+interface ShoppingListView {
+category: string;
+categoryId: string;
+day: string;
+goods: Array<Goods>;
+};
+
+const shoppingList:Array<ShoppingListView> = getJsonValue("shoppingList");
 
 export const ShoppingList = () => {
   const [open, setOpen] = useState(false);
-  const [shoppingListView, setShoppingListView] = useState(shoppingList);
+  const [shoppingListView, setShoppingListView] = useState<Array<ShoppingListView>>(shoppingList);
   const handleOpen = () => setOpen(true);
   const dispatch = useDispatch();
   const handleClose = () => setOpen(false);
   const isEveryEmpty = useMemo(()=>
   shoppingListView?.every(
-    (item) => item?.goods?.length === 0, shoppingListView))
+    (item) => item?.goods?.length === 0, shoppingListView),[])
 
   
 
   const handleDeleteItem = useCallback (
-    (list, item) => {
-      const updateShop = new Array(...shoppingListView);
-      const categorySelect = updateShop.filter(
+    (list:ShoppingListView, item:string) => {
+      const updatedShop = new Array(...shoppingListView);
+      const categorySelect = updatedShop.filter(
         (shoppingListView) => shoppingListView.category === list.category
-      );
+      ) as Array<ShoppingListView>;
+      
       const goodSelect = categorySelect[0].goods.filter(
-        (good) => good.id !== item
-      );
-      const result = updateShop.map((shoppingListView) =>
+        (good:Goods) => good.id !== item
+      ) as Array<Goods>;
+      const result = updatedShop.map((shoppingListView) =>
         shoppingListView.category === list.category
-          ? new Object({
+          ? ({
               category: shoppingListView.category,
               categoryId: shoppingListView.categoryId,
               goods: goodSelect,
             })
           : shoppingListView
-      );
-      setShoppingListView(result);
+      ) as Array<ShoppingListView>;
+
+      setShoppingListView((result));
 
       localStorage.setItem("shoppingList", JSON.stringify(result));
     },
@@ -56,8 +74,8 @@ export const ShoppingList = () => {
   );
 
   const findCategory = useCallback(
-    (id) => {
-      let categoryIndex = "";
+    (id:string) => {
+      let categoryIndex: number=0;
 
       const category = shoppingListView.find((category, index) => {
         const isCurrentCategory = `${category.categoryId}` === id;
@@ -76,7 +94,7 @@ export const ShoppingList = () => {
   );
 
   const moveCategory = useCallback(
-     (start,finish) => {
+     (start:number,finish:number) => {
     const result = shoppingListView;
 
       const [removed] = result.splice(start, 1);
@@ -91,7 +109,7 @@ export const ShoppingList = () => {
   );
 
   const deleteCategory = useCallback(
-    (start) => {
+    (start:number) => {
       const result = shoppingListView;
       result.splice(start,1);
       result.length > 0 && setShoppingListView(result);
@@ -104,8 +122,8 @@ export const ShoppingList = () => {
   );
 
   const editCategory = useCallback(
-    (id, item) => {
-      const { category, index } = findCategory(id);
+    (id:string, item:ShoppingListView) => {
+      const { index }  = findCategory(id);
       const updateShoppingListView = new Array(...shoppingListView);
       updateShoppingListView.splice(index, 1, item);
       setShoppingListView(updateShoppingListView);
@@ -138,7 +156,7 @@ export const ShoppingList = () => {
   };
   
   useEffect(() => {
-    isEveryEmpty && localStorage.clear("shoppingList");
+    isEveryEmpty && localStorage.removeItem("shoppingList");
   }, [shoppingListView,Droppable]);
 
   return !open ? (
@@ -169,7 +187,7 @@ export const ShoppingList = () => {
               shoppingListView.map((list, index) => {
               return (
                 <BasicMenu
-                list={list}
+                  list={list}
                   key={list?.categoryId}
                   id={list?.categoryId}
                   originalIndex={index}
@@ -189,6 +207,7 @@ export const ShoppingList = () => {
             <Button
               onClick={handleOpen}
               buttonText={addItemButtonText}/>
+              
             </Container>
 
   )
@@ -199,3 +218,5 @@ export const ShoppingList = () => {
     </Modal>
   );
 };
+
+
