@@ -1,10 +1,5 @@
-import styled from "styled-components";
-
+import React from "react";
 import { ModalWindow, Substrate, WrapperModal, CloseIconMui } from "./AdditionStyled";
-
-
-
-
 
 export const Modal = ({ children, close, edit }) => {
   return (

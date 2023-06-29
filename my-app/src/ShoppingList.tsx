@@ -1,13 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Addition } from "./Addition";
-import BasicMenu from "./BasicMenu";
-import { Button } from "./Button";
-import { addItemButtonText } from "./buttonText";
-import { Modal } from "./Modal";
+import { Addition } from "./Addition.tsx";
+import BasicMenu from "./BasicMenu.tsx";
+import { Button } from "./Button.tsx";
+import { addItemButtonText } from "./buttonText.tsx";
+import { Modal } from "./Modal.tsx";
 import { isMobile } from "react-device-detect";
-import { getJsonValue } from "./utils/getJsonValue";
-import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { getJsonValue } from "./utils/getJsonValue.tsx";
+import { DragDropContext, Droppable, DroppableProvided } from "react-beautiful-dnd";
 import { Container, List, TrashContainer, TrashImg } from "./AdditionStyled";
 import { createPortal } from "react-dom";
 import Trash from "./img/trash.png";
@@ -18,17 +18,18 @@ import React from "react";
 const trash = Trash;
 
 
-interface Goods {
+export interface Goods {
 name: string;
-number: string;
+number: number;
 image: string;
 id: string;
+key: number
 }
 
-interface ShoppingListView {
+export interface ShoppingListView {
 category: string;
 categoryId: string;
-day: string;
+day: Date;
 goods: Array<Goods>;
 };
 
@@ -168,7 +169,7 @@ export const ShoppingList = () => {
       >
 
       <Droppable droppableId="delete">
-        {(provided, snapshot) => (
+        {(provided: DroppableProvided, snapshot) => (
           createPortal(
           <TrashContainer
             ref={provided.innerRef}
@@ -176,12 +177,12 @@ export const ShoppingList = () => {
             deleteArea={deleteArea}
             >
             <TrashImg src={trash} alt = "trash" isMobile={isMobile}/>
-          </TrashContainer>, document.getElementById('root')
+          </TrashContainer>, document.getElementById('root') as HTMLElement
           )
         )}
       </Droppable>
       <Droppable droppableId="droppable">
-        {(provided) => (
+        {(provided: DroppableProvided) => (
           <List ref={provided.innerRef} {...provided.droppableProps}>
             {shoppingListView &&
               shoppingListView.map((list, index) => {
@@ -189,12 +190,7 @@ export const ShoppingList = () => {
                 <BasicMenu
                   list={list}
                   key={list?.categoryId}
-                  id={list?.categoryId}
-                  originalIndex={index}
                   handleDeleteItem={handleDeleteItem}
-                  findCategory={findCategory}
-                  moveCategory={moveCategory}
-                  deleteCategory={deleteCategory}
                   editCategory={editCategory}
                   index={index}
                 />
@@ -205,6 +201,7 @@ export const ShoppingList = () => {
       </Droppable>
     </DragDropContext>
             <Button
+              min= ""
               onClick={handleOpen}
               buttonText={addItemButtonText}/>
               
@@ -213,8 +210,8 @@ export const ShoppingList = () => {
   )
 
   : (
-    <Modal close={handleClose}>
-      <Addition close={handleClose} />
+    <Modal close={handleClose} edit = "">
+      <Addition/>
     </Modal>
   );
 };

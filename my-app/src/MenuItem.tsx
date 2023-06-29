@@ -1,8 +1,9 @@
-import { Modal } from "./Modal";
+import { Modal } from "./Modal.tsx";
 import { useState } from "react";
-import { Editing } from "./Editing";
+import { Editing } from "./Editing.tsx";
 import Trash from "./img/trash.png";
 import { ItemValue, MuiMenuItem } from "./AdditionStyled";
+import React from "react";
 
 const trash = Trash;
 

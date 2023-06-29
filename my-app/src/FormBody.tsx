@@ -1,3 +1,4 @@
+import React from "react";
 import { memo, useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import {
@@ -9,8 +10,27 @@ import {
 } from "./AdditionStyled";
 
 import { good } from "./redux/selectors";
+import { Goods, ShoppingListView } from "./ShoppingList";
 
-export const FormBody = memo (function FormBody({ item,
+interface FormBodyProps {
+        image: string
+        fileDataURLEdit: Map<any, any>
+        handleChange: (e: React.ChangeEvent<HTMLInputElement>, id: number) => void
+        itemNumber: number
+        getFile: (file: File) => void
+        file: File | undefined
+        getItemNumber:  (item:number) => string
+        updatedGood: Goods
+        getUpdatedGoods: (good:Goods[], value:Goods,id:string |number) => void
+        item: number
+        itemsAddition: Set<number>
+        handleRemove: (item: number) => void
+        getGoods: (name:string, number: number, image: string, id: number) => Goods
+        fileDataURL: Map<any, any>
+}
+
+export const FormBody = memo (function FormBody({ 
+  item,
   itemsAddition,
   getItemNumber,
   handleRemove,
@@ -18,12 +38,13 @@ export const FormBody = memo (function FormBody({ item,
   image,
   itemNumber,
   handleChange,
-  getValueForGoodsValue,
-  getUpdatedGoodsValue,
+  getGoods,
+  getUpdatedGoods,
   fileDataURL,
   fileDataURLEdit 
-}) {
- const goods = useSelector(good);
+}:FormBodyProps) {
+ const goods = useSelector(good) as Array<Goods>;
+ console.log(goods)
  const goodValue = useMemo(() => (goods.filter(good=>good.key===item))[0],[goods,item]);
  
  
@@ -32,21 +53,21 @@ export const FormBody = memo (function FormBody({ item,
   if (fileDataURL)  {
      const good = goods?.filter(good => good.key === itemNumber);
     
-    if (getUpdatedGoodsValue) {
-         const value = getValueForGoodsValue(good[0]?.name || goodValue?.name, good[0]?.number || goodValue?.number, fileDataURL.get(itemNumber),itemNumber);
-         getUpdatedGoodsValue(good,value,itemNumber);}
+    if (getUpdatedGoods) {
+         const value = getGoods(good[0]?.name || goodValue?.name, good[0]?.number || goodValue?.number, fileDataURL.get(itemNumber),itemNumber);
+         getUpdatedGoods(good,value,itemNumber);}
   };
   },[fileDataURL])
 
   const getBody = (
-    type,
-    value,
-    id,
-    placeholder,
-    required,
-    size,
-    min,
-    accept
+    type:string,
+    value:string | number,
+    id:string,
+    placeholder:string,
+    required:boolean,
+    size?:string,
+    min?:string,
+    accept?:string
   ) => {
     return (
       <Input
@@ -54,7 +75,7 @@ export const FormBody = memo (function FormBody({ item,
         value={value}
         id={id}
         placeholder={placeholder}
-        onChange={(e) => handleChange(e, item)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange(e, item)}
         theArgs
         required={required}
         size={size}
@@ -103,3 +124,4 @@ export const FormBody = memo (function FormBody({ item,
     </>
   );
 });
+

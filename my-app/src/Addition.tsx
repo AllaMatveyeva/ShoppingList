@@ -1,33 +1,35 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Button } from "./Button";
-import { addbuttonText, saveButtonText } from "./buttonText";
-import { FormBody } from "./FormBody";
-import { getNewMapValue } from "./utils/getNewMapValue";
+import { Button } from "./Button.tsx";
+import { addbuttonText, saveButtonText } from "./buttonText.tsx";
+import  {FormBody } from "./FormBody.tsx";
 import { Form, Submit, ButtonBlock, Label, Input, Wrapper } from "./AdditionStyled";
-import { getJsonValue } from "./utils/getJsonValue";
+import { getJsonValue } from "./utils/getJsonValue.tsx";
 import { useDispatch, useSelector } from "react-redux";
 import { category, good } from "./redux/selectors";
 import { addItem, changeCategory, changeGood } from "./redux/actions";
-import { useFileReader } from "./utils/useFileReader";
+import { useFileReader } from "./utils/useFileReader.tsx";
+import { resizeFile } from "./utils/getResizeImage.tsx";
+import React from "react";
+import { Goods, ShoppingListView } from "./ShoppingList";
 
 
 export const Addition = () => {
   
   const [itemNumber, setItemNumber] = useState(1);
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState<File>();
  const [itemsAddition, setItemsAddition] = useState(new Set([1]));
   const dispatch = useDispatch();
 const categoryValue = useSelector (category);
 const goodsValue = useSelector(good);
 const fileDataURL = useFileReader(file,itemNumber)
 
-const handleCategoryChange = (event) => {
+const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
    dispatch(changeCategory( event.target.value));
    };
 
 
 
-   const getValueForGoodsValue = useCallback((...theArgs) => ({
+   const getGoods = useCallback((...theArgs):Goods => ({
     name: theArgs[0],
     number: theArgs[1],
     image:theArgs[2],
@@ -35,49 +37,53 @@ const handleCategoryChange = (event) => {
     key:theArgs[3]
   }),[]);
 
-  const getUpdatedGoodsValue = useCallback ((good,value,id) => {
-        let updateGoodsValue = [...goodsValue];
+  const getUpdatedGoods = useCallback ((good:Goods[],value:Goods,id:number):void => {
+    let updatedGoodsValue = [...goodsValue];
            if (good.length > 0) {
-            updateGoodsValue = updateGoodsValue.map(goodValue=>goodValue.key===id? value: goodValue);
+            updatedGoodsValue = updatedGoodsValue.map(goodValue=>goodValue.key===id ? value: goodValue);
           } else {
-            updateGoodsValue.push(value)
+            updatedGoodsValue.push(value)
           }
-          dispatch(changeGood(updateGoodsValue))
+          dispatch(changeGood(updatedGoodsValue))
   },[goodsValue]);
+
   
-   const handleChange = useCallback ((event,id) => {
-   if (event.target.id ==="image") {
-      const file = event.target.files[0];
-     setFile(file);
-    }
-    const good = (goodsValue?.filter(good => good.key === id));
+  const handleChange = useCallback (async(event: { target: { id: string; files: File[]; value: any; }; },id:number):Promise<void> => {
     
-    const name = event.target.id === "name" ?  event.target.value :  (good[0]?.name ||  "");
-    const number = event.target.id === "number" ?  event.target.value :  (good[0]?.number || "");
-    const image = event.target.id === "image" ?  fileDataURL?.get(id) :  (good[0]?.image || "");
-     const value = getValueForGoodsValue (name, number, image,id);
-    getUpdatedGoodsValue(good,value,id);
-   
-     },[goodsValue,itemsAddition]);
+    if (event.target.id ==="image") {
+      let file: File = event.target.files[0];
+      if (file.size > 200000) {
+        file = await resizeFile(file);
+      }
+      setFile(file);
+     }
+     const good: Goods[] = (goodsValue?.filter((good: { key: number; }) => good.key === id));
+     
+     const name = event.target.id === "name" ?  event.target.value :  (good[0]?.name ||  "");
+     const number = event.target.id === "number" ?  event.target.value :  (good[0]?.number || "");
+     const image = event.target.id === "image" ?  fileDataURL?.get(id) :  (good[0]?.image || "");
+     const value = getGoods (name, number, image,id);
+     getUpdatedGoods(good,value,id);
+    
+      },[goodsValue,itemsAddition]);
 
 
 
-
-   const handleSubmit = (event) => {
-    const shoppingList = [{
+   const handleSubmit = () => {
+    const shoppingList: ShoppingListView[] = [{
       category: categoryValue,
       categoryId: categoryValue + Date(),
       goods: Array.from(goodsValue.values()),
       day: new Date(),
     }];
 
-    const oldShoppingList = getJsonValue("shoppingList");
+    const oldShoppingList : Array<ShoppingListView>= getJsonValue("shoppingList");
     oldShoppingList?.forEach((list) => {
     if ( list.category===shoppingList[0].category ) {
       shoppingList[0].goods=(shoppingList[0].goods).concat(list.goods);
     } })
-    const updateShoppingList = oldShoppingList?.filter(list=>list.category!==shoppingList[0].category);
-   const newShoppingList = oldShoppingList ? shoppingList.concat(updateShoppingList) : shoppingList;
+    const updatedShoppingList = oldShoppingList?.filter(list=>list.category!==shoppingList[0].category);
+   const newShoppingList = oldShoppingList ? shoppingList.concat(updatedShoppingList) : shoppingList;
    localStorage.setItem("shoppingList", JSON.stringify(newShoppingList));
   };
 
@@ -89,15 +95,14 @@ const handleCategoryChange = (event) => {
     setItemsAddition(new Set (updatedItemsAddition));
   },[itemsAddition]);
 
-  const handleRemove = useCallback((item) => {
+  const handleRemove = useCallback((item:number) => {
     const updatedItemsAddition = new Set (itemsAddition);
     updatedItemsAddition.delete (item);
     setItemsAddition(new Set (updatedItemsAddition));
     const newGoodsValue = [...goodsValue];
    const updatedGoodsValue = newGoodsValue.filter(goodValue=>goodValue.key!==item);
-    
     dispatch(changeGood(updatedGoodsValue));
-    setFile(null)
+    setFile(undefined)
   },[itemsAddition,goodsValue])
   
  
@@ -113,7 +118,7 @@ return (
           </div>
           {Array.from(itemsAddition).map((item,index) => {
             return (
-            <FormBody item={item} id={item} key = {index} handleChange={handleChange} itemsAddition={itemsAddition} itemNumber={itemNumber} file={file} getItemNumber={setItemNumber} handleRemove={handleRemove}  fileDataURL={fileDataURL} getValueForGoodsValue={getValueForGoodsValue} getUpdatedGoodsValue={getUpdatedGoodsValue}/>
+            <FormBody item={item} id={item} key = {index} handleChange={handleChange} itemsAddition={itemsAddition} itemNumber={itemNumber} file={file} getItemNumber={setItemNumber} handleRemove={handleRemove}  fileDataURL={fileDataURL} getGoods={getGoods} getUpdatedGoods={getUpdatedGoods}/>
           
 )})}
         </Wrapper>

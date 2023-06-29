@@ -1,7 +1,7 @@
 import * as React from "react";
 import { CloseIconAddition, MuiMenu } from "./AdditionStyled";
-import { DragCategory } from "./dragCategory";
-import { Items } from "./Items";
+import { DragCategory } from "./dragCategory.tsx";
+import { Items } from "./Items.tsx";
 
 export default function BasicMenu({
   list,
@@ -10,10 +10,10 @@ export default function BasicMenu({
   index,
 }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [listHeight, setListHeight] = React.useState(100);
+  const [listHeight, setListHeight] = React.useState<number>();
   const open = Boolean(anchorEl);
 
-  const handleClick = (event) => {
+  const handleClick = (event: { currentTarget: React.SetStateAction<null>; }) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -22,7 +22,7 @@ export default function BasicMenu({
   };
 
   return (
-    list?.goods?.length > 0 && (
+    list?.goods?.length > 0 ? (
       <>
         <DragCategory
           index={index}
@@ -51,6 +51,6 @@ export default function BasicMenu({
           />
         </MuiMenu>
       </>
-    )
+    ) : null
   );
 }
